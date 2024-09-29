@@ -21,6 +21,11 @@ const Header = () => {
     toast.success("You signed out");  
   };
   
+
+
+
+
+  
   const search = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     dispatch(searchActions.searchWord(value));
