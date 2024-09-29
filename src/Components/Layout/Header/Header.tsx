@@ -6,17 +6,21 @@ import { TRootState } from "../../../Store/BigPie";
 import { userActions } from "../../../Store/UserSlice";
 import { CiSearch } from "react-icons/ci";
 import { searchActions } from "../../../Store/SearchSlice";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const user = useSelector((state: TRootState) => state.UserSlice.user);
   const dispatch = useDispatch();
   const nav = useNavigate();
 
+
+
   const logout = () => {
     dispatch(userActions.logout());
-    nav("/");
+    nav("/");  
+    toast.success("You signed out");  
   };
-
+  
   const search = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     dispatch(searchActions.searchWord(value));
