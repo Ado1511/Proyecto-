@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BsPencilSquare } from "react-icons/bs";
 import { BsTrash3Fill } from "react-icons/bs";
-import { PiPlus } from "react-icons/pi";
 import { TiHeartOutline } from "react-icons/ti";
+import { CiCirclePlus } from "react-icons/ci";
 
 const MyCards = () => {
 
@@ -87,8 +87,8 @@ const MyCards = () => {
     return (
         <div className="flex flex-col items-center justify-start gap-2">
             <h1 className="text-2xl">My Cards</h1>
-            <p className="text-lg"> These cards were made by user</p>
-            {user.isLoggedIn && <p className="text-lg">User Is Logged IN!!!!!!!!</p>}
+            <p className="text-lg"> These cards were made by you</p>
+            {user.isLoggedIn && <p className="text-lg"></p>}
 
             <div className="flex flex-wrap w-3/5 gap-1 m-auto">
                 {searchCards()!.map((item: TCard) => {
@@ -104,6 +104,8 @@ const MyCards = () => {
                                 className="h-[200px] object-fill"
                             />
                             <h1>{item.title}</h1>
+                            <hr />
+                            <hr />
                             <h3>{item.subtitle}</h3>
                             <p>{item.description}</p>
                             <hr />
@@ -122,8 +124,8 @@ const MyCards = () => {
                     );
                 })}
             </div>
-            <div className="fixed flex p-3 rounded-full cursor-pointer right-10 top-20 bg-cyan-200">
-                <PiPlus size={20} onClick={navToCreate} />
+            <div className="fixed flex p-3 rounded-full cursor-pointer right-10 top-20">
+            <CiCirclePlus size={50} onClick={navToCreate} />
             </div>
         </div>
     );
