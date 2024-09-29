@@ -26,7 +26,7 @@ const Header = () => {
     <Navbar fluid rounded className="bg-orange-600">
       <Navbar.Brand as={Link} href="https://flowbite-react.com">
         <span className="self-center text-xl font-semibold text-white whitespace-nowrap">
-          My App
+          BizSnap
         </span>
       </Navbar.Brand>
       <Navbar.Toggle />
