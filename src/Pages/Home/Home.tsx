@@ -61,25 +61,27 @@ const Home = () => {
   const user = useSelector((state: TRootState) => state.UserSlice);
 
   return (
-    <div className="flex flex-col items-center justify-start gap-2">
+    <div className="flex flex-col items-center justify-start gap-2 bg-orange-300">
       <h1 className="text-2xl">Home Page</h1>
       <p className="text-lg">Welcome Home!</p>
-      {user.isLoggedIn && <p className="text-lg">User Is Logged IN!!!!!!!!</p>}
+      {user.isLoggedIn && <p className="text-lg"></p>}
 
-      <div className="flex flex-wrap w-3/5 gap-1 m-auto">
+      <div className="grid w-4/5 grid-cols-3 gap-3 m-auto">
+
         {searchCards()!.map((item: TCard) => {
           return (
             <Card
               key={item._id}
-              className="w-2/6 m-auto"
-            >
+              className="w-4/6 m-auto">
               <img
                 onClick={() => navToCard(item._id)}
                 src={item.image.url}
                 alt={item.image.alt}
-                className="h-[200px] object-fill"
+                className="h-[250px] object-fill"
               />
               <h1>{item.title}</h1>
+              <hr />
+              <hr />
               <h3>{item.subtitle}</h3>
               <p>{item.description}</p>
               <hr />
