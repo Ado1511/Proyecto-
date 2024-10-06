@@ -46,7 +46,7 @@ function App() {
   };
 
   return (
-    <div className={isDarkMode ? "dark" : ""}> 
+    <div className={isDarkMode ? "dark text-yellow-200 bg-teal-900" : ""}> 
       <Header toggleDarkMode={toggleDarkMode} />
       <Routes>
         <Route path="/*" element={<Home />} />

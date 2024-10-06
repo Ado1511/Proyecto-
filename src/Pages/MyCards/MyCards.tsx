@@ -85,7 +85,7 @@ const MyCards = () => {
     const user = useSelector((state: TRootState) => state.UserSlice);
 
     return (
-        <div className="flex flex-col items-center justify-start gap-2">
+        <div className="flex flex-col items-center justify-start gap-2 bg-orange-300">
             <h1 className="text-2xl">My Cards</h1>
             <p className="text-lg"> These cards were made by you</p>
             {user.isLoggedIn && <p className="text-lg"></p>}

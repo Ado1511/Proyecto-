@@ -53,7 +53,7 @@ const CreateCard = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 m-auto text-center bg-gray-200 rounded-lg shadow-lg">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 m-auto text-center bg-orange-300 rounded-lg shadow-lg">
                 <h1 className="text-4xl font-bold text-center text-gray-800"> Card Creation</h1>
 
                 <div className="flex gap-3 m-auto">
@@ -87,8 +87,8 @@ const CreateCard = () => {
                             Description</label>
 
                         <textarea id="message" {...register("description")}
-                            className="block p-2.5 w-[500px] h-[200px] m-auto text-sm text-gray-900 bg-gray-50
-                        rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500
+                            className="block p-2.5 w-[500px] h-[200px] m-auto text-sm text-gray-900 bg-orange-200
+                        rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500
                         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
                         dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none"
                             placeholder="Write your card description here...">

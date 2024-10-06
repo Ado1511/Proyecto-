@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDarkMode }) => {
   return (
     <Navbar fluid rounded className="bg-orange-600">
       <Navbar.Brand as={Link} href="https://flowbite-react.com">
-        <span className="self-center text-xl font-semibold text-white whitespace-nowrap">
+        <span className="self-center text-xl italic font-semibold text-white whitespace-nowrap">
           BizSnap
         </span>
       </Navbar.Brand>
