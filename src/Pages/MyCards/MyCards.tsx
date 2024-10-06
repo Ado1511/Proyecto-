@@ -49,7 +49,7 @@ const MyCards = () => {
             const ifLiked = cards[index].likes.includes(user.user!._id);
             const newCards = [...cards];
             if (ifLiked) {
-                newCards[index].likes.splice(index);
+                newCards[index].likes.splice(newCards[index].likes.indexOf(user.user!._id), 1);
                 toast.success("card unliked");
             } else {
                 newCards[index].likes.push(user.user!._id);
@@ -84,6 +84,7 @@ const MyCards = () => {
 
     const user = useSelector((state: TRootState) => state.UserSlice);
 
+
     return (
         <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
             <h1 className="text-2xl">My Cards</h1>
@@ -93,34 +94,35 @@ const MyCards = () => {
             <div className="flex flex-wrap w-3/5 gap-1 m-auto">
                 {searchCards()!.map((item: TCard) => {
                     return (
-                        <Card
-                            key={item._id}
-                            className="w-2/6 m-auto"
-                        >
-                            <img
-                                onClick={() => navToCard(item._id)}
-                                src={item.image.url}
-                                alt={item.image.alt}
-                                className="h-[200px] object-fill"
-                            />
-                            <h1>{item.title}</h1>
-                            <hr />
-                            <hr />
-                            <h3>{item.subtitle}</h3>
-                            <p>{item.description}</p>
-                            <hr />
+<Card key={item._id} className="w-2/6 m-auto">
+    <img
+        onClick={() => navToCard(item._id)}
+        src={item.image.url}
+        alt={item.image.alt}
+        className="h-[200px] object-fill"
+    />
+    <h1 className="text-lg font-semibold">{item.title}</h1>
+    <hr />
+    <h3 className="text-md">{item.subtitle}</h3>
+    <p className="text-sm">{item.description}</p>
+    <hr />
 
-                            {user && user.user && <TiHeartOutline
-                                size={20}
-                                className="m-auto cursor-pointer"
-                                color={isLikedCard(item) ? "red" : "black"}
-                                onClick={() => likeUnlikeCard(item)}
-                            />}
+    {user && user.user && (
+        <div className="flex items-center justify-between mt-2 space-x-4">
+            <BsPencilSquare size={20} className="cursor-pointer" />
+            <TiHeartOutline
+                size={20}
+                className="cursor-pointer"
+                color={isLikedCard(item) ? "red" : "black"}
+                onClick={() => likeUnlikeCard(item)}
+            />
+            
+            <BsTrash3Fill size={20} className="cursor-pointer" onClick={() => deleteCard(item)} />
+        </div>
+    )}
+</Card>
 
-                            <BsPencilSquare size={20} />
-
-                            <BsTrash3Fill size={20} onClick={() => deleteCard(item)} />
-                        </Card>
+                        
                     );
                 })}
             </div>

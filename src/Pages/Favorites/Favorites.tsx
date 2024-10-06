@@ -16,6 +16,8 @@ const Favorites = () => {
         (state: TRootState) => state.SearchSlice.search,
     );
 
+    const user = useSelector((state: TRootState) => state.UserSlice);
+
     const searchCards = () => {
         return cards.filter((item) => item.likes.includes(user.user!._id))
             .filter((item: TCard) => item.title.includes(searchWord));
@@ -39,27 +41,34 @@ const Favorites = () => {
     };
 
     const likeUnlikeCard = async (card: TCard) => {
-        const res = await axios.patch("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/" + card._id);
-        if (res.status === 200) {
-            toast.success("card liked/unliked");
+        try {
+            const res = await axios.patch("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/" + card._id);
+            if (res.status === 200) {
+                toast.success("Card liked/unliked");
 
-            const index = cards.indexOf(card);
-            const ifLiked = cards[index].likes.includes(user.user!._id);
-            const newCards = [...cards];
-            if (ifLiked) {
-                newCards[index].likes.splice(index);
-            } else {
-                newCards[index].likes.push(user.user!._id);
+                const index = cards.indexOf(card);
+                const newCards = [...cards];
+                const userId = user.user!._id;
+
+                
+                if (newCards[index].likes.includes(userId)) {
+                    
+                    newCards[index].likes = newCards[index].likes.filter(id => id !== userId);
+                } else {
+                    
+                    newCards[index].likes.push(userId);
+                }
+
+                setCards(newCards);
             }
-            setCards(newCards);
-        };
+        } catch (error) {
+            toast.error("Error liking/unliking card");
+        }
     };
 
     useEffect(() => {
         getData();
     }, []);
-
-    const user = useSelector((state: TRootState) => state.UserSlice);
 
     return (
         <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
@@ -86,23 +95,20 @@ const Favorites = () => {
                             <hr />
 
                             {user && user.user && (
-  <div className="flex items-center justify-center space-x-4">
-    <MdOutlinePhone
-      size={20}
-      className="cursor-pointer"
-      color="black"
-    />
-    <TiHeartOutline
-      size={20}
-      className="cursor-pointer"
-      color={isLikedCard(item) ? "red" : "black"}
-      onClick={() => likeUnlikeCard(item)}
-    />
-  </div>
-)}
-
-                                        
-
+                                <div className="flex items-center justify-center space-x-4">
+                                    <MdOutlinePhone
+                                        size={20}
+                                        className="cursor-pointer"
+                                        color="black"
+                                    />
+                                    <TiHeartOutline
+                                        size={20}
+                                        className="cursor-pointer"
+                                        color={isLikedCard(item) ? "red" : "black"}
+                                        onClick={() => likeUnlikeCard(item)}
+                                    />
+                                </div>
+                            )}
                         </Card>
                     );
                 })}
