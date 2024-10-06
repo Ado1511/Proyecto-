@@ -15,6 +15,9 @@ import { useEffect } from "react";
 import { decode } from "./Services/tokenService";
 import axios from "axios";
 import { userActions } from "./Store/UserSlice";
+import SignUp from "./Pages/SingUp/SingUp";
+
+
 
 function App() {
   const user = useSelector((state: TRootState) => state.UserSlice.user);
@@ -44,7 +47,9 @@ function App() {
       <Routes>
         <Route path="/*" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/card/:id" element={<CardDetails />} />
+        
 
         <Route
           path="/profile"
@@ -81,6 +86,7 @@ function App() {
             </RouteGuard>
           }
         />
+        
 
       </Routes>
       <div>
