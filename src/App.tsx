@@ -11,7 +11,7 @@ import CardDetails from "./Pages/CardDetails/CardDetails";
 import Favorites from "./Pages/Favorites/Favorites";
 import MyCards from "./Pages/MyCards/MyCards";
 import CreateCard from "./Pages/CreateCard/CreateCard";
-import { useEffect, useState } from "react"; // Asegúrate de importar useState
+import { useEffect, useState } from "react"; 
 import { decode } from "./Services/tokenService";
 import axios from "axios";
 import { userActions } from "./Store/UserSlice";
@@ -46,7 +46,7 @@ function App() {
   };
 
   return (
-    <div className={isDarkMode ? "dark text-yellow-200 bg-teal-900" : ""}> 
+    <div className={isDarkMode ? "dark text-white" : ""}> 
       <Header toggleDarkMode={toggleDarkMode} />
       <Routes>
         <Route path="/*" element={<Home />} />

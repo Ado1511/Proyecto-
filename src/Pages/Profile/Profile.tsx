@@ -6,11 +6,14 @@ const Profile = () => {
   const user = useSelector((state: TRootState) => state.UserSlice);
 
   return (
+    <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
+            {user.isLoggedIn && <p className="text-lg"></p>}
     <div className="flex flex-col items-center justify-start min-h-screen gap-2">
       <h1 className="text-2xl">Profile Page</h1>
       <p className="text-lg dark:text-white">
         Welcome {user.user?.name.first + " " + user.user?.name.last}
       </p>
+    </div>
     </div>
   );
 };

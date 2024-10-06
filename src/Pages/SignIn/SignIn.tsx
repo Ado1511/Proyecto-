@@ -57,6 +57,9 @@ function SignIn() {
   };
 
   return (
+    <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
+    <h1 className="text-2xl">Sing Up</h1>
+    <p className="text-lg"> Sing Up to the amazing world of BizSnap</p>
     <form
       className="flex flex-col w-2/5 gap-4 p-4 m-auto mt-20 rounded-lg shadow-lg"
       onSubmit={handleSubmit(submit)}
@@ -81,11 +84,13 @@ function SignIn() {
       <span className="text-sm text-red-500">
         {errors["password"]?.message}
       </span>
+      
 
       <Button type="submit" disabled={!isValid}>
         Sign In
       </Button>
     </form>
+    </div>
   );
 }
 

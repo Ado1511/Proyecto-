@@ -62,7 +62,7 @@ const Favorites = () => {
     const user = useSelector((state: TRootState) => state.UserSlice);
 
     return (
-        <div className="flex flex-col items-center justify-start gap-2 bg-orange-300">
+        <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
             <h1 className="text-2xl">Favorites</h1>
             <p className="text-lg">Welcome to your Favorites</p>
             {user.isLoggedIn && <p className="text-lg"></p>}

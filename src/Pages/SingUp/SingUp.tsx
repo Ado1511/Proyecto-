@@ -41,6 +41,9 @@ await axios.post(
 };
 
 return (
+    <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
+            <h1 className="text-2xl">Sing Up</h1>
+            <p className="text-lg"> Sing Up to the amazing world of BizSnap</p>
     <form
     className="flex flex-col w-2/5 gap-4 p-4 m-auto mt-20 rounded-lg shadow-lg"
     onSubmit={handleSubmit(submit)}
@@ -87,6 +90,7 @@ return (
         Sign Up
     </Button>
     </form>
+    </div>
 );
 }
 

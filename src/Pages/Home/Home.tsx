@@ -62,7 +62,7 @@ const Home = () => {
   const user = useSelector((state: TRootState) => state.UserSlice);
 
   return (
-    <div className="flex flex-col items-center justify-start gap-2 bg-orange-300">
+    <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
       <h1 className="text-2xl">Home Page</h1>
       <p className="text-lg">Welcome Home!</p>
       {user.isLoggedIn && <p className="text-lg"></p>}
