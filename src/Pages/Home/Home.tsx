@@ -7,6 +7,7 @@ import { Card } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TiHeartOutline } from "react-icons/ti";
+import { MdOutlinePhone } from "react-icons/md";
 
 const Home = () => {
   const [cards, setCards] = useState<TCard[]>([]);
@@ -86,12 +87,22 @@ const Home = () => {
               <p>{item.description}</p>
               <hr />
 
-              {user && user.user && <TiHeartOutline
-                size={20}
-                className="m-auto cursor-pointer"
-                color={isLikedCard(item) ? "red" : "black"}
-                onClick={() => likeUnlikeCard(item)}
-              />}
+              {user && user.user && (
+  <div className="flex items-center justify-center space-x-4">
+        <MdOutlinePhone
+      size={20}
+      className="cursor-pointer"
+      color="black"
+    />
+    <TiHeartOutline
+      size={20}
+      className="cursor-pointer"
+      color={isLikedCard(item) ? "red" : "black"}
+      onClick={() => likeUnlikeCard(item)}
+    />
+  </div>
+)}
+
 
             </Card>
           );

@@ -7,6 +7,7 @@ import { Card } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TiHeartOutline } from "react-icons/ti";
+import { MdOutlinePhone } from "react-icons/md";
 
 const Favorites = () => {
     const [cards, setCards] = useState<TCard[]>([]);
@@ -61,17 +62,17 @@ const Favorites = () => {
     const user = useSelector((state: TRootState) => state.UserSlice);
 
     return (
-        <div className="flex flex-col items-center justify-start gap-2">
-            <h1 className="text-2xl">Home Page</h1>
-            <p className="text-lg">Welcome Home!</p>
-            {user.isLoggedIn && <p className="text-lg">User Is Logged IN!</p>}
+        <div className="flex flex-col items-center justify-start gap-2 bg-orange-300">
+            <h1 className="text-2xl">Favorites</h1>
+            <p className="text-lg">Welcome to your Favorites</p>
+            {user.isLoggedIn && <p className="text-lg"></p>}
 
-            <div className="flex flex-wrap w-3/5 gap-1 m-auto">
+            <div className="grid w-4/5 grid-cols-3 gap-3 m-auto">
                 {searchCards()!.map((item: TCard) => {
                     return (
                         <Card
                             key={item._id}
-                            className="w-2/6 m-auto"
+                            className="w-4/6 m-auto"
                         >
                             <img
                                 onClick={() => navToCard(item._id)}
@@ -84,12 +85,23 @@ const Favorites = () => {
                             <p>{item.description}</p>
                             <hr />
 
-                            {user && user.user && <TiHeartOutline
-                                size={20}
-                                className="m-auto cursor-pointer"
-                                color={isLikedCard(item) ? "red" : "black"}
-                                onClick={() => likeUnlikeCard(item)}
-                            />}
+                            {user && user.user && (
+  <div className="flex items-center justify-center space-x-4">
+    <MdOutlinePhone
+      size={20}
+      className="cursor-pointer"
+      color="black"
+    />
+    <TiHeartOutline
+      size={20}
+      className="cursor-pointer"
+      color={isLikedCard(item) ? "red" : "black"}
+      onClick={() => likeUnlikeCard(item)}
+    />
+  </div>
+)}
+
+                                        
 
                         </Card>
                     );

@@ -53,9 +53,8 @@ const CreateCard = () => {
 
     return (
         <>
-            <h1> hi </h1>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 m-auto bg-gray-200 rounded-lg shadow-lg">
-                <h1 className="text-2xl font-bold text-center text-gray-800"> Card Creation</h1>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 m-auto text-center bg-gray-200 rounded-lg shadow-lg">
+                <h1 className="text-4xl font-bold text-center text-gray-800"> Card Creation</h1>
 
                 <div className="flex gap-3 m-auto">
                     <div className="flex flex-col">
