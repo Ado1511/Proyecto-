@@ -11,17 +11,16 @@ import CardDetails from "./Pages/CardDetails/CardDetails";
 import Favorites from "./Pages/Favorites/Favorites";
 import MyCards from "./Pages/MyCards/MyCards";
 import CreateCard from "./Pages/CreateCard/CreateCard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react"; // Asegúrate de importar useState
 import { decode } from "./Services/tokenService";
 import axios from "axios";
 import { userActions } from "./Store/UserSlice";
 import SignUp from "./Pages/SingUp/SingUp";
 
-
-
 function App() {
   const user = useSelector((state: TRootState) => state.UserSlice.user);
   const dispatch = useDispatch();
+  const [isDarkMode, setIsDarkMode] = useState(false); // Estado para el modo nocturno
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -41,58 +40,38 @@ function App() {
         });
     }
   }, [dispatch]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prevMode => !prevMode); // Alternar el modo nocturno
+  };
+
   return (
-    <>
-      <Header />
+    <div className={isDarkMode ? "dark" : ""}> 
+      <Header toggleDarkMode={toggleDarkMode} />
       <Routes>
         <Route path="/*" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/card/:id" element={<CardDetails />} />
-        
 
         <Route
           path="/profile"
-          element={
-            <RouteGuard user={user!}>
-              <Profile />
-            </RouteGuard>
-          }
-        />
+          element={<RouteGuard user={user!}><Profile /></RouteGuard>} />
 
         <Route
           path="/mycards"
-          element={
-            <RouteGuard user={user!}>
-              <MyCards />
-            </RouteGuard>
-          }
-        />
+          element={<RouteGuard user={user!}><MyCards /></RouteGuard>} />
 
         <Route
           path="/createcard"
-          element={
-            <RouteGuard user={user!}>
-              <CreateCard />
-            </RouteGuard>
-          }
-        />
+          element={<RouteGuard user={user!}><CreateCard /></RouteGuard>} />
 
         <Route
           path="/favorites"
-          element={
-            <RouteGuard user={user!}>
-              <Favorites />
-            </RouteGuard>
-          }
-        />
-        
-
+          element={<RouteGuard user={user!}><Favorites /></RouteGuard>} />
       </Routes>
-      <div>
-        <Footer />
-      </div>
-    </>
+      <Footer />
+    </div>
   );
 }
 

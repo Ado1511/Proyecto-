@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/classnames-order */
 import { Navbar, TextInput } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,25 +6,25 @@ import { userActions } from "../../../Store/UserSlice";
 import { CiSearch } from "react-icons/ci";
 import { searchActions } from "../../../Store/SearchSlice";
 import { toast } from "react-toastify";
+import { MdNightlight} from "react-icons/md";
+import React from "react";
 
-const Header = () => {
+interface HeaderProps {
+  toggleDarkMode: () => void; 
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleDarkMode }) => {
   const user = useSelector((state: TRootState) => state.UserSlice.user);
   const dispatch = useDispatch();
+  const [isDarkMode] = React.useState(false);
   const nav = useNavigate();
-
-
 
   const logout = () => {
     dispatch(userActions.logout());
     nav("/");  
     toast.success("You signed out");  
   };
-  
 
-
-
-
-  
   const search = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     dispatch(searchActions.searchWord(value));
@@ -40,26 +39,27 @@ const Header = () => {
       </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse>
-
         <Navbar.Link as={Link} to={"/"} href="/" className="text-white">
           Home
         </Navbar.Link>
 
-        {user?.isBusiness && <Navbar.Link as={Link} to={"/mycards"} href="/mycards" className="text-white">
-          My Cards
-        </Navbar.Link>}
+        {user?.isBusiness && (
+          <Navbar.Link as={Link} to={"/mycards"} href="/mycards" className="text-white">
+            My Cards
+          </Navbar.Link>
+        )}
 
         {!user && (
-          <Navbar.Link
-            as={Link}
-            to={"/signin"}
-            href="/signin"
-            className="text-white"
-          >
-            Sign In
-          </Navbar.Link>
-
+          <>
+            <Navbar.Link as={Link} to={"/signin"} href="/signin" className="text-white">
+              Sign In
+            </Navbar.Link>
+            <Navbar.Link as={Link} to={"/signup"} href="/signup" className="text-white">
+              Sign Up
+            </Navbar.Link>
+          </>
         )}
+        
         {user && (
           <Navbar.Link className="text-white cursor-pointer" onClick={logout}>
             Sign Out
@@ -68,25 +68,23 @@ const Header = () => {
 
         {user && (
           <>
-            <Navbar.Link
-              as={Link}
-              to={"/profile"}
-              href="/profile"
-              className="text-white"
-            >
+            <Navbar.Link as={Link} to={"/profile"} href="/profile" className="text-white">
               Profile
             </Navbar.Link>
-            <Navbar.Link
-              as={Link}
-              to={"/favorites"}
-              href="/favorites"
-              className="text-white"
-            >
+            <Navbar.Link as={Link} to={"/favorites"} href="/favorites" className="text-white">
               Favorites
             </Navbar.Link>
           </>
         )}
 
+        
+        <button 
+          onClick={toggleDarkMode} 
+          className="ml-4 text-white size-5">
+          <MdNightlight  
+          className={isDarkMode ? "text-yellow-400" : "text-white"} 
+          />
+        </button>
       </Navbar.Collapse>
       <TextInput rightIcon={CiSearch} onChange={search} />
     </Navbar>
