@@ -89,11 +89,13 @@ const Home = () => {
 
               {user && user.user && (
   <div className="flex items-center justify-center space-x-4">
+    <a href={`https://web.whatsapp.com/` } target="_blank">
         <MdOutlinePhone
       size={20}
       className="cursor-pointer"
       color="black"
     />
+    </a>
     <TiHeartOutline
       size={20}
       className="cursor-pointer"
