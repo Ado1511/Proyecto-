@@ -31,58 +31,58 @@ const Header: React.FC<HeaderProps> = ({ toggleDarkMode }) => {
   };
 
   return (
-    <Navbar fluid rounded className="bg-orange-600">
+    <Navbar fluid rounded className="bg-slate-100">
       <Navbar.Brand as={Link} href="https://flowbite-react.com">
-        <span className="self-center text-xl italic font-semibold text-white whitespace-nowrap">
+        <span className="self-center pl-10 text-xl italic font-semibold text-dark whitespace-nowrap">
           BizSnap
         </span>
       </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse>
-        <Navbar.Link as={Link} to={"/"} href="/" className="text-white">
+        <Navbar.Link as={Link} to={"/"} href="/" className="text-dark">
           Home
         </Navbar.Link>
 
         {user?.isBusiness && (
-          <Navbar.Link as={Link} to={"/mycards"} href="/mycards" className="text-white">
+          <Navbar.Link as={Link} to={"/mycards"} href="/mycards" className="text-dark">
             My Cards
           </Navbar.Link>
         )}
 
         {!user && (
           <>
-            <Navbar.Link as={Link} to={"/signin"} href="/signin" className="text-white">
+            <Navbar.Link as={Link} to={"/signin"} href="/signin" className="text-dark">
               Sign In
             </Navbar.Link>
-            <Navbar.Link as={Link} to={"/signup"} href="/signup" className="text-white">
+            <Navbar.Link as={Link} to={"/signup"} href="/signup" className="text-dark">
               Sign Up
             </Navbar.Link>
           </>
         )}
         
         {user && (
-          <Navbar.Link className="text-white cursor-pointer" onClick={logout}>
-            Sign Out
-          </Navbar.Link>
-        )}
-
-        {user && (
           <>
-            <Navbar.Link as={Link} to={"/profile"} href="/profile" className="text-white">
+            <Navbar.Link as={Link} to={"/profile"} href="/profile" className="text-dark">
               Profile
             </Navbar.Link>
-            <Navbar.Link as={Link} to={"/favorites"} href="/favorites" className="text-white">
+            <Navbar.Link as={Link} to={"/favorites"} href="/favorites" className="text-dark">
               Favorites
             </Navbar.Link>
           </>
         )}
 
+{user && (
+          <Navbar.Link className="cursor-pointer text-dark" onClick={logout}>
+            Sign Out
+          </Navbar.Link>
+        )}
+
         
         <button 
           onClick={toggleDarkMode} 
-          className="ml-4 text-white size-5">
+          className="ml-4 text-dark size-5">
           <MdNightlight  
-          className={isDarkMode ? "text-yellow-400" : "text-white"} 
+          className={isDarkMode ? "text-yellow-400" : "text-dark"} 
           />
         </button>
       </Navbar.Collapse>

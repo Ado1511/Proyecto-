@@ -67,13 +67,13 @@ const Home = () => {
       <p className="text-lg">Welcome Home!</p>
       {user.isLoggedIn && <p className="text-lg"></p>}
 
-      <div className="grid w-4/5 grid-cols-3 gap-3 m-auto">
+      <div className="grid w-4/5 grid-cols-3 gap-2 m-auto ">
 
         {searchCards()!.map((item: TCard) => {
           return (
-            <Card
+            <Card 
               key={item._id}
-              className="w-4/6 m-auto">
+              className="w-5/6 m-auto max-h-200 h-[500px] ">
               <img
                 onClick={() => navToCard(item._id)}
                 src={item.image.url}
