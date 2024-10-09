@@ -6,7 +6,7 @@ const Profile = () => {
   const user = useSelector((state: TRootState) => state.UserSlice);
 
   return (
-    <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
+    <div className="flex flex-col items-center justify-start gap-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
             {user.isLoggedIn && <p className="text-lg"></p>}
     <div className="flex flex-col items-center justify-start min-h-screen gap-2">
       <h1 className="text-2xl">Profile Page</h1>

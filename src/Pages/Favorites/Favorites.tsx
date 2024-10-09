@@ -71,7 +71,7 @@ const Favorites = () => {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
+        <div className="flex flex-col items-center justify-start gap-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
             <h1 className="text-2xl">Favorites</h1>
             <p className="text-lg">Welcome to your Favorites</p>
             {user.isLoggedIn && <p className="text-lg"></p>}
