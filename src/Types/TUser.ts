@@ -1,4 +1,5 @@
 export type TUser = {
+  isRegular: string;
   imageUrl: string;
   about: string;
   city: string;

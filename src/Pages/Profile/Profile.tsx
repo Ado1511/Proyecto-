@@ -25,8 +25,8 @@ const Profile = () => {
             setProfileData({
                 name: `${user.name.first} ${user.name.middle} ${user.name.last}`,
                 email: user.email,
-                userType: user.isBusiness ? "Business" : "Regular",
-                aboutMe: user.about || "", // Inicializa el campo About Me
+                userType: user.isBusiness ? "Business" : user.isAdmin ? "Admin" : user.isRegular ? "Regular" : "",
+                aboutMe: user.about || "", 
             });
         }
     }, [user, nav]);
@@ -65,11 +65,11 @@ const Profile = () => {
     };
 
     return (
-      <div className="flex flex-col items-center justify-start gap-15 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
-            <h1 className="mb-4 text-2xl font-bold">Profile Page</h1>
+      <div className="flex flex-col items-center justify-start gap-10 mb-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+            <h1 className="mb-4 text-2xl font-bold text-center">Profile Page</h1>
             <div className="flex justify-center mt-10">
-                <div className="p-6 bg-white rounded-lg shadow-lg w-96">
-                    <h2 className="mb-4 text-xl font-bold">User Profile</h2>
+                <div className="p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">User Profile</h2>
                     <form onSubmit={handleSubmit}>
                         
                         <FloatingLabel
@@ -80,8 +80,8 @@ const Profile = () => {
                             value={profileData.name}
                             onChange={handleChange}
                             disabled={!isEditing}
+                            className="mb-4"
                         />
-                        
                         
                         <FloatingLabel
                             type="email"
@@ -91,11 +91,11 @@ const Profile = () => {
                             value={profileData.email}
                             onChange={handleChange}
                             disabled={!isEditing}
+                            className="mb-4"
                         />
 
-                        
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">About Me</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">About Me</label>
                             <Textarea
                                 name="aboutMe"
                                 value={profileData.aboutMe}
@@ -104,16 +104,15 @@ const Profile = () => {
                                 maxLength={260}
                                 placeholder="Tell us about yourself (max 260 characters)"
                                 rows={3}
+                                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                             />
                         </div>
 
-                        
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">User Type</label>
-                            <p className="mt-1 text-sm text-gray-900">{profileData.userType}</p>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">User Type</label>
+                            <p className="mt-1 text-sm text-gray-900 dark:text-gray-200">{profileData.userType}</p>
                         </div>
 
-                        
                         <div className="flex items-center justify-between">
                             <Button 
                                 type="button" 
