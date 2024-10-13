@@ -43,6 +43,12 @@ const Header: React.FC<HeaderProps> = ({ toggleDarkMode }) => {
           Home
         </Navbar.Link>
 
+      
+        <Navbar.Link as={Link} to={"/about"} href="/about" className="text-dark">
+          About
+        </Navbar.Link> 
+
+
         {user?.isBusiness && (
           <Navbar.Link as={Link} to={"/mycards"} href="/mycards" className="text-dark">
             My Cards

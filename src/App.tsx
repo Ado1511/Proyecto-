@@ -16,6 +16,7 @@ import { decode } from "./Services/tokenService";
 import axios from "axios";
 import { userActions } from "./Store/UserSlice";
 import SignUp from "./Pages/SingUp/SingUp";
+import About from "./Pages/About/About";
 
 function App() {
   const user = useSelector((state: TRootState) => state.UserSlice.user);
@@ -50,9 +51,13 @@ function App() {
       <Header toggleDarkMode={toggleDarkMode} />
       <Routes>
         <Route path="/*" element={<Home />} />
+        <Route path="/About" element={<About />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/card/:id" element={<CardDetails />} />
         <Route path="/signup" element={<SignUp />} />
+      
+
+
 
         <Route
           path="/profile"
@@ -70,6 +75,8 @@ function App() {
           path="/favorites"
           element={<RouteGuard user={user!}><Favorites /></RouteGuard>} />
       </Routes>
+      
+
       <Footer />
     </div>
   );
