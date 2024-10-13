@@ -19,7 +19,8 @@ const CardDetails = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-start gap-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+<h1 className="text-4xl font-bold"></h1>
       <h1>{card && card.title!}</h1>
       <h1>{card && card.bizNumber!}</h1>
       <h1>{card && card.phone!}</h1>
