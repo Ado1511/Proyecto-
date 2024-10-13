@@ -65,13 +65,13 @@ const Profile = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-start gap-2 p-4 bg-orange-400">
+      <div className="flex flex-col items-center justify-start gap-15 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
             <h1 className="mb-4 text-2xl font-bold">Profile Page</h1>
             <div className="flex justify-center mt-10">
                 <div className="p-6 bg-white rounded-lg shadow-lg w-96">
                     <h2 className="mb-4 text-xl font-bold">User Profile</h2>
                     <form onSubmit={handleSubmit}>
-                        {/* Nombre Completo */}
+                        
                         <FloatingLabel
                             type="text"
                             variant="outlined"
@@ -82,7 +82,7 @@ const Profile = () => {
                             disabled={!isEditing}
                         />
                         
-                        {/* Correo Electrónico */}
+                        
                         <FloatingLabel
                             type="email"
                             variant="outlined"
@@ -93,7 +93,7 @@ const Profile = () => {
                             disabled={!isEditing}
                         />
 
-                        {/* Acerca de Mí */}
+                        
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">About Me</label>
                             <Textarea
@@ -107,13 +107,13 @@ const Profile = () => {
                             />
                         </div>
 
-                        {/* Tipo de Usuario */}
+                        
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">User Type</label>
                             <p className="mt-1 text-sm text-gray-900">{profileData.userType}</p>
                         </div>
 
-                        {/* Botón de Edición */}
+                        
                         <div className="flex items-center justify-between">
                             <Button 
                                 type="button" 
