@@ -1,4 +1,8 @@
 export type TUser = {
+  imageUrl: string;
+  about: string;
+  city: string;
+  age: string;
   _id: string;
   name: {
     first: string;
