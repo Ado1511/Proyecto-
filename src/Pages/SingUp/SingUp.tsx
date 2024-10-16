@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 function SignUp() {
   const nav = useNavigate();
 
-  
+  // Estructura inicial del formulario
   const initialFormData = {
     name: {
       first: "",
@@ -42,20 +42,20 @@ function SignUp() {
   } = useForm({
     defaultValues: initialFormData,
     mode: "onChange",
-    resolver: joiResolver(SignUpJoiSchema), 
+    resolver: joiResolver(SignUpJoiSchema), // Valida usando Joi
   });
 
   // Función de envío del formulario
   const submit = async (form: any) => {
     try {
-      
+      // Realiza la solicitud POST al API
       await axios.post(
-        "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/register",
+        "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users",
         form
       );
 
       toast.success("Registration Successful");
-      nav("/signin"); 
+      nav("/signin"); // Redirige al inicio de sesión después del registro
     } catch (error) {
       console.error(error);
       toast.error("Registration Failed");
@@ -63,7 +63,7 @@ function SignUp() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start gap-2" style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+    <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
       <h1 className="text-2xl">Sign Up</h1>
       <p className="text-lg">Sign Up to the amazing world of BizSnap</p>
       <form
