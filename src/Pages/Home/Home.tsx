@@ -69,16 +69,16 @@ const Home = () => {
 
       <div className="grid w-4/5 grid-cols-3 gap-2 m-auto ">
 
-        {searchCards()!.map((item: TCard) => {
+        {searchCards()!.map((item: TCard) => { 
           return (
             <Card 
               key={item._id}
-              className="w-5/6 m-auto max-h-200 h-[500px] ">
+              className="w-5/6 m-auto max-h-250 h-[500px] ">
               <img
                 onClick={() => navToCard(item._id)}
                 src={item.image.url}
                 alt={item.image.alt}
-                className="h-[250px] object-fill"
+                className="h-[200px] object-fill rounded-xl  max-h-200 max-w-200"
               />
               <h1>{item.title}</h1>
               <hr />
