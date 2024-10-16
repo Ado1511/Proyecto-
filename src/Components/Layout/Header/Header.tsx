@@ -6,23 +6,22 @@ import { userActions } from "../../../Store/UserSlice";
 import { CiSearch } from "react-icons/ci";
 import { searchActions } from "../../../Store/SearchSlice";
 import { toast } from "react-toastify";
-import { MdNightlight} from "react-icons/md";
+import { MdNightlight } from "react-icons/md";
 import React from "react";
 
 interface HeaderProps {
-  toggleDarkMode: () => void; 
+  toggleDarkMode: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleDarkMode }) => {
   const user = useSelector((state: TRootState) => state.UserSlice.user);
   const dispatch = useDispatch();
-  const [isDarkMode] = React.useState(false);
   const nav = useNavigate();
 
   const logout = () => {
     dispatch(userActions.logout());
-    nav("/");  
-    toast.success("You signed out");  
+    nav("/");
+    toast.success("You signed out");
   };
 
   const search = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,68 +30,58 @@ const Header: React.FC<HeaderProps> = ({ toggleDarkMode }) => {
   };
 
   return (
-    <Navbar fluid rounded className="bg-slate-100">
-      <Navbar.Brand as={Link} href="https://flowbite-react.com">
-        <span className="self-center pl-10 text-xl italic font-semibold text-dark whitespace-nowrap">
+    <Navbar fluid rounded className="bg-slate-100 dark:bg-slate-800">
+      <Navbar.Brand as={Link} to="/">
+        <span className="self-center pl-10 text-xl italic font-semibold text-dark dark:text-white whitespace-nowrap">
           BizSnap
         </span>
       </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse>
-        <Navbar.Link as={Link} to={"/"} href="/" className="text-dark">
+        <Navbar.Link as={Link} to="/" className="text-dark dark:text-white">
           Home
         </Navbar.Link>
-
-      
-        <Navbar.Link as={Link} to={"/about"} href="/about" className="text-dark">
+        <Navbar.Link as={Link} to="/about" className="text-dark dark:text-white">
           About
-        </Navbar.Link> 
-
-
+        </Navbar.Link>
         {user?.isBusiness && (
-          <Navbar.Link as={Link} to={"/mycards"} href="/mycards" className="text-dark">
+          <Navbar.Link as={Link} to="/mycards" className="text-dark dark:text-white">
             My Cards
           </Navbar.Link>
         )}
-
         {!user && (
           <>
-            <Navbar.Link as={Link} to={"/signin"} href="/signin" className="text-dark">
+            <Navbar.Link as={Link} to="/signin" className="text-dark dark:text-white">
               Sign In
             </Navbar.Link>
-            <Navbar.Link as={Link} to={"/signup"} href="/signup" className="text-dark">
+            <Navbar.Link as={Link} to="/signup" className="text-dark dark:text-white">
               Sign Up
             </Navbar.Link>
           </>
         )}
-        
         {user && (
           <>
-            <Navbar.Link as={Link} to={"/profile"} href="/profile" className="text-dark">
+            <Navbar.Link as={Link} to="/profile" className="text-dark dark:text-white">
               Profile
             </Navbar.Link>
-            <Navbar.Link as={Link} to={"/favorites"} href="/favorites" className="text-dark">
+            <Navbar.Link as={Link} to="/favorites" className="text-dark dark:text-white">
               Favorites
+            </Navbar.Link>
+            <Navbar.Link className="cursor-pointer text-dark dark:text-white" onClick={logout}>
+              Sign Out
             </Navbar.Link>
           </>
         )}
-
-{user && (
-          <Navbar.Link className="cursor-pointer text-dark" onClick={logout}>
-            Sign Out
-          </Navbar.Link>
-        )}
-
-        
-        <button 
-          onClick={toggleDarkMode} 
-          className="ml-4 text-dark size-5">
-          <MdNightlight  
-          className={isDarkMode ? "text-yellow-400" : "text-dark"} 
-          />
+        <button onClick={toggleDarkMode} className="ml-4 text-dark dark:text-white size-5">
+          <MdNightlight className="text-dark dark:text-yellow-400" />
         </button>
       </Navbar.Collapse>
-      <TextInput rightIcon={CiSearch} onChange={search} />
+      <TextInput 
+        rightIcon={CiSearch} 
+        onChange={search} 
+        placeholder="Search..."
+        className="ml-4" 
+      />
     </Navbar>
   );
 };

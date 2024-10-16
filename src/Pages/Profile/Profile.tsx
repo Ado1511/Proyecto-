@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { TRootState } from "../../Store/BigPie";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button, FloatingLabel, Textarea } from "flowbite-react";
+import { Button, Textarea, TextInput } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -20,10 +20,10 @@ const Profile = () => {
 
     useEffect(() => {
         if (!user) {
-            nav("/signin");
+            nav("/signin", { replace: true }); 
         } else {
             setProfileData({
-                name: `${user.name.first} ${user.name.middle} ${user.name.last}`,
+                name: `${user.name.first} ${user.name.middle || ""} ${user.name.last}`.trim(),
                 email: user.email,
                 userType: user.isBusiness ? "Business" : user.isAdmin ? "Admin" : user.isRegular ? "Regular" : "",
                 aboutMe: user.about || "", 
@@ -52,7 +52,6 @@ const Profile = () => {
                     profileData
                 );
                 toast.success("Profile updated successfully!");
-                setProfileData({ ...profileData });
             } else {
                 toast.error("User not found.");
             }
@@ -65,28 +64,25 @@ const Profile = () => {
     };
 
     return (
-      <div className="flex flex-col items-center justify-start gap-10 mb-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+    <div className="flex flex-col items-center justify-start gap-10 mb-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
             <h1 className="mb-4 text-2xl font-bold text-center">Profile Page</h1>
             <div className="flex justify-center mt-10">
                 <div className="p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96">
                     <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">User Profile</h2>
                     <form onSubmit={handleSubmit}>
-                        
-                        <FloatingLabel
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                        <TextInput
                             type="text"
-                            variant="outlined"
-                            label="Full Name"
                             name="name"
                             value={profileData.name}
                             onChange={handleChange}
                             disabled={!isEditing}
                             className="mb-4"
                         />
-                        
-                        <FloatingLabel
+
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                        <TextInput
                             type="email"
-                            variant="outlined"
-                            label="Email"
                             name="email"
                             value={profileData.email}
                             onChange={handleChange}

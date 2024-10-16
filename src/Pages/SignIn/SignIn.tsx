@@ -1,6 +1,6 @@
 /* eslint-disable tailwindcss/classnames-order */
 import { joiResolver } from "@hookform/resolvers/joi";
-import { Button, FloatingLabel } from "flowbite-react";
+import { Button } from "flowbite-react";
 import { useForm } from "react-hook-form";
 import { SignInJoiSchema } from "../../validations/SigninSchema.joi";
 import axios from "axios";
@@ -39,8 +39,8 @@ function SignIn() {
       localStorage.setItem("token", token.data);
       const id = decode(token.data)._id;
 
-      console.log(token.data);
-      console.log(decode(token.data));
+      console.log("Token received: ", token.data);
+      console.log("Decoded Token: ", decode(token.data));
       console.log(id);
 
       axios.defaults.headers.common["x-auth-token"] = token.data;
@@ -50,46 +50,54 @@ function SignIn() {
       dispatch(userActions.login(user.data));
       toast.success("Sign In Successful");
       nav("/");
-    } catch (error) {
-      console.log(error);
-      toast.error("Sign In Failed");
+    } catch (error: any) {
+      console.log("Error during sign in:", error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "Sign In Failed");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
-    <h1 className="text-2xl">Sing Up</h1>
-    <p className="text-lg"> Sing Up to the amazing world of BizSnap</p>
-    <form
-      className="flex flex-col w-2/5 gap-4 p-4 m-auto mt-20 rounded-lg shadow-lg"
-      onSubmit={handleSubmit(submit)}
-    >
-      <h1 className="text-2xl font-bold text-gray-800">Sign In</h1>
-      <FloatingLabel
-        type="email"
-        variant="outlined"
-        label="Email"
-        {...register("email")}
-        color={errors["email"] ? "error" : "success"}
-      />
-      <span className="text-sm text-red-500">{errors["email"]?.message}</span>
+    <div className="flex flex-col items-center justify-start gap-2 mb-20" style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+      <h1 className="text-2xl">Sign In</h1>
+      <p className="text-lg">Sign In to the amazing world of BizSnap</p>
+      <form
+        className="flex flex-col w-2/5 gap-4 p-4 m-auto mt-20 bg-white rounded-lg shadow-lg"
+        onSubmit={handleSubmit(submit)}
+      >
+        <h1 className="text-2xl font-bold text-gray-800">Sign In</h1>
 
-      <FloatingLabel
-        type="password"
-        variant="outlined"
-        label="Password"
-        {...register("password")}
-        color={errors["password"] ? "error" : "success"}
-      />
-      <span className="text-sm text-red-500">
-        {errors["password"]?.message}
-      </span>
-      
+        <div className="my-4">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            {...register("email")}
+            className={`w-full p-2 border-2 rounded-md ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          <span className="text-sm text-red-500">{errors.email?.message}</span>
+        </div>
 
-      <Button type="submit" disabled={!isValid}>
-        Sign In
-      </Button>
-    </form>
+        <div className="my-4">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <input
+            type="password"
+            {...register("password")}
+            className={`w-full p-2 border-2 rounded-md ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          <span className="text-sm text-red-500">{errors.password?.message}</span>
+        </div>
+
+        <Button type="submit" disabled={!isValid} className="w-full">
+          Sign In
+        </Button>
+      </form>
     </div>
   );
 }
