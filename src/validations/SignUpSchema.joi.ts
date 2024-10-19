@@ -12,14 +12,14 @@ export const SignUpJoiSchema = Joi.object({
   }),
   phone: Joi.string()
     .pattern(/^[0-9\s\-\(\)]+$/) // Permite solo números y algunos caracteres especiales
-    .min(9) // Asegúrate de tener un mínimo de 10 dígitos
+    .min(9) // Asegúrate de tener un mínimo de 9 dígitos
     .required()
     .messages({
       'string.pattern.base': `"Phone number" must be a valid phone number`,
       'string.min': `"Phone number" should have a minimum length of {#limit}`,
       'any.required': `"Phone number" is a required field`,
     }),
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email({ tlds: { allow: false } }).required().messages({
     'string.email': `"Email" must be a valid email`,
     'string.empty': `"Email" is required`,
   }),

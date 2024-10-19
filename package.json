@@ -46,7 +46,7 @@
     "vite": "^5.2.0"
   },
   "author": {
- "name" : "ado chaio",
- "email": "adochaio15@gmail.com"
-}
+    "name": "ado chaio",
+    "email": "adochaio15@gmail.com"
+  }
 }
