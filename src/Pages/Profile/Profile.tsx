@@ -3,8 +3,9 @@ import { useSelector } from "react-redux";
 import { TRootState } from "../../Store/BigPie";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button, Textarea, TextInput } from "flowbite-react";
+import { Button, Textarea, TextInput, Card } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
+import { FaUser, FaEnvelope, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 
 const Profile = () => {
     const user = useSelector((state: TRootState) => state.UserSlice.user);
@@ -13,116 +14,42 @@ const Profile = () => {
         email: "",
         userType: "",
         aboutMe: "",
+        city: "",
+        phone: "",
     });
     const [loading, setLoading] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
     const nav = useNavigate();
 
     useEffect(() => {
         if (!user) {
-            nav("/signin", { replace: true }); 
+            nav("/signin", { replace: true });
         } else {
             setProfileData({
                 name: `${user.name.first} ${user.name.middle || ""} ${user.name.last}`.trim(),
                 email: user.email,
                 userType: user.isBusiness ? "Business" : user.isAdmin ? "Admin" : user.isRegular ? "Regular" : "",
-                aboutMe: user.about || "", 
+                aboutMe: user.about || "",
+                city: user.city || "", // Nuevo campo
+                phone: user.phone || "", // Nuevo campo
             });
         }
     }, [user, nav]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setProfileData({ ...profileData, [name]: value });
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!profileData.name || !profileData.email) {
-            toast.error("Name and email are required.");
-            return;
-        }
-
-        setLoading(true);
-        try {
-            if (user) {
-                await axios.patch(
-                    `https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${user._id}`,
-                    profileData
-                );
-                toast.success("Profile updated successfully!");
-            } else {
-                toast.error("User not found.");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to update profile.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     return (
-    <div className="flex flex-col items-center justify-start gap-10 m-auto " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+        <div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Profile Page</h1>
-            <div className="flex justify-center mt-10">
-                <div className="p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">User Profile</h2>
-                    <form onSubmit={handleSubmit}>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
-                        <TextInput
-                            type="text"
-                            name="name"
-                            value={profileData.name}
-                            onChange={handleChange}
-                            disabled={!isEditing}
-                            className="mb-4"
-                        />
-
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                        <TextInput
-                            type="email"
-                            name="email"
-                            value={profileData.email}
-                            onChange={handleChange}
-                            disabled={!isEditing}
-                            className="mb-4"
-                        />
-
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">About Me</label>
-                            <Textarea
-                                name="aboutMe"
-                                value={profileData.aboutMe}
-                                onChange={handleChange}
-                                disabled={!isEditing}
-                                maxLength={260}
-                                placeholder="Tell us about yourself (max 260 characters)"
-                                rows={3}
-                                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                            />
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">User Type</label>
-                            <p className="mt-1 text-sm text-gray-900 dark:text-gray-200">{profileData.userType}</p>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <Button 
-                                type="button" 
-                                onClick={() => setIsEditing(!isEditing)} 
-                                className="mr-2"
-                            >
-                                {isEditing ? "Cancel" : "Edit"}
-                            </Button>
-                            <Button type="submit" disabled={loading || !isEditing}>
-                                {loading ? "Updating..." : "Update Profile"}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+            <div className="flex justify-center mt-10 mb-5"> {/* Agregando margen inferior */}
+                <Card className="p-6 bg-white border border-gray-300 rounded-lg shadow-lg w-96">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">User Profile</h2>
+                    <div>
+                        <p className="mb-4"><strong>Full Name:</strong> {profileData.name}</p>
+                        <p className="mb-4"><strong>Email:</strong> {profileData.email}</p>
+                        <p className="mb-4"><strong>Phone:</strong> {profileData.phone}</p>
+                        <p className="mb-4"><strong>City:</strong> {profileData.city}</p>
+                        <p className="mb-4"><strong>About Me:</strong> {profileData.aboutMe}</p>
+                        <p className="mb-4"><strong>User Type:</strong> {profileData.userType}</p>
+                    </div>
+                </Card>
             </div>
         </div>
     );
