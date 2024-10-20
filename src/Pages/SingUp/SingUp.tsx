@@ -5,12 +5,38 @@ import { SignUpJoiSchema } from "../../validations/SignUpSchema.joi";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+type FormData = {
+  name: {
+    first: string;
+    middle: string;
+    last: string;
+  };
+  phone: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  address: {
+    state: string;
+    country: string;
+    city: string;
+    street: string;
+    houseNumber: number;
+    zip: number;
+  };
+  isBusiness: boolean;
+  image: {
+    url: string;
+    alt: string;
+  };
+};
 
 function SignUp() {
-  const nav = useNavigate();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  // Estructura inicial del formulario
-  const initialFormData = {
+  const initialFormData: FormData = {
     name: {
       first: "",
       middle: "",
@@ -19,184 +45,95 @@ function SignUp() {
     phone: "",
     email: "",
     password: "",
-    image: {
-      url: "",
-      alt: "",
-    },
     confirmPassword: "",
     address: {
       state: "",
       country: "",
       city: "",
       street: "",
-      houseNumber: 0,
+      houseNumber: 1,
       zip: 0,
     },
     isBusiness: false,
+    image: {
+      url: "",
+      alt: "",
+    },
   };
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-  } = useForm({
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: initialFormData,
     mode: "onChange",
-    resolver: joiResolver(SignUpJoiSchema), // Valida usando Joi
+    resolver: joiResolver(SignUpJoiSchema),
   });
 
-  // Función de envío del formulario
-  const submit = async (form: any) => {
+  const submit = async (form: FormData) => {
+    setLoading(true);
+    console.log("Submitting Form Data:", form); // Log de los datos que se envían
     try {
-      // Realiza la solicitud POST al API
-      await axios.post(
-        "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users",
-        form
-      );
-
+      const response = await axios.post("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users", form);
+      console.log("Response:", response.data); // Log de la respuesta
       toast.success("Registration Successful");
-      nav("/signin"); // Redirige al inicio de sesión después del registro
+      navigate("/signin");
     } catch (error) {
-      console.error(error);
-      toast.error("Registration Failed");
+      const errorMessage = (error as any).response?.data?.message || "Registration Failed. Please try again.";
+      console.error("Error in the request:", error); // Log de error completo
+      console.error("Full Error Response:", (error as any).response); // Log detallado de la respuesta de error
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false); // Resetear loading
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-start gap-2 bg-orange-400">
-      <h1 className="text-2xl">Sign Up</h1>
-      <p className="text-lg">Sign Up to the amazing world of BizSnap</p>
+    <div className="flex flex-col items-center justify-center h-full p-5 bg-orange-400">
+      <h1 className="mb-4 text-4xl font-bold text-white">Sign Up</h1>
+      <p className="mb-6 text-lg text-white">Join the amazing world of BizSnap</p>
       <form
-        className="flex flex-col w-2/5 gap-4 p-4 m-auto mt-20 rounded-lg shadow-lg"
+        className="flex flex-col w-full h-full max-w-md p-6 mb-10 bg-white rounded-lg shadow-lg"
         onSubmit={handleSubmit(submit)}
       >
-        <h1 className="text-2xl font-bold text-gray-800">Sign Up</h1>
+        {/* Input fields with FloatingLabel */}
+        {[
+          { label: "First Name", name: "name.first" },
+          { label: "Middle Name", name: "name.middle" },
+          { label: "Last Name", name: "name.last" },
+          { label: "Phone", name: "phone", type: "text" },
+          { label: "Email", name: "email", type: "email" },
+          { label: "Password", name: "password", type: "password" },
+          { label: "Confirm Password", name: "confirmPassword", type: "password" },
+          { label: "Street", name: "address.street" },
+          { label: "City", name: "address.city" },
+          { label: "State", name: "address.state" },
+          { label: "Country", name: "address.country" },
+          { label: "House Number", name: "address.houseNumber", type: "number" },
+          { label: "Zip Code", name: "address.zip", type: "number" },
+          { label: "Image URL (optional)", name: "image.url" },
+          { label: "Image Alt Text (optional)", name: "image.alt" },
+        ].map(({ label, name, type = "text" }) => {
+          const nameParts = name.split('.') as [keyof FormData, keyof FormData[keyof FormData]];
+          const errorMessage = (errors[nameParts[0]]?.[nameParts[1]] as any)?.message;
 
-        {/* Nombre */}
-        <FloatingLabel
-          type="text"
-          variant="outlined"
-          label="First Name"
-          {...register("name.first")}
-          color={errors.name?.first ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.name?.first?.message}</span>
+          return (
+            <div key={name}>
+              <FloatingLabel
+                type={type}
+                variant="outlined"
+                label={label}
+                {...register(name as keyof FormData)}
+                color={errorMessage ? "error" : "success"}
+              />
+              {errorMessage && <span className="text-sm text-red-500">{errorMessage}</span>}
+            </div>
+          );
+        })}
 
-        <FloatingLabel
-          type="text"
-          variant="outlined"
-          label="Middle Name"
-          {...register("name.middle")}
-          color={errors.name?.middle ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.name?.middle?.message}</span>
-
-        <FloatingLabel
-          type="text"
-          variant="outlined"
-          label="Last Name"
-          {...register("name.last")}
-          color={errors.name?.last ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.name?.last?.message}</span>
-
-        {/* Teléfono */}
-        <FloatingLabel
-          type="text"
-          variant="outlined"
-          label="Phone"
-          {...register("phone")}
-          color={errors.phone ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.phone?.message}</span>
-
-        {/* Correo Electrónico */}
-        <FloatingLabel
-          type="email"
-          variant="outlined"
-          label="Email"
-          {...register("email")}
-          color={errors.email ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.email?.message}</span>
-
-        {/* Contraseña */}
-        <FloatingLabel
-          type="password"
-          variant="outlined"
-          label="Password"
-          {...register("password")}
-          color={errors.password ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.password?.message}</span>
-
-        {/* Confirmar Contraseña */}
-        <FloatingLabel
-          type="password"
-          variant="outlined"
-          label="Confirm Password"
-          {...register("confirmPassword")}
-          color={errors.confirmPassword ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.confirmPassword?.message}</span>
-
-        {/* Dirección */}
-        <FloatingLabel
-          type="text"
-          variant="outlined"
-          label="Street"
-          {...register("address.street")}
-          color={errors.address?.street ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.address?.street?.message}</span>
-
-        <FloatingLabel
-          type="text"
-          variant="outlined"
-          label="City"
-          {...register("address.city")}
-          color={errors.address?.city ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.address?.city?.message}</span>
-
-        <FloatingLabel
-          type="text"
-          variant="outlined"
-          label="State"
-          {...register("address.state")}
-          color={errors.address?.state ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.address?.state?.message}</span>
-
-        <FloatingLabel
-          type="text"
-          variant="outlined"
-          label="Country"
-          {...register("address.country")}
-          color={errors.address?.country ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.address?.country?.message}</span>
-
-        <FloatingLabel
-          type="number"
-          variant="outlined"
-          label="House Number"
-          {...register("address.houseNumber")}
-          color={errors.address?.houseNumber ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.address?.houseNumber?.message}</span>
-
-        <FloatingLabel
-          type="number"
-          variant="outlined"
-          label="Zip Code"
-          {...register("address.zip")}
-          color={errors.address?.zip ? "error" : "success"}
-        />
-        <span className="text-sm text-red-500">{errors.address?.zip?.message}</span>
-
-        {/* Opción de Negocio */}
-        <label className="flex items-center">
+        {/* Business Option */}
+        <label className="flex items-center mb-4">
           <input
             type="checkbox"
             {...register("isBusiness")}
@@ -205,8 +142,8 @@ function SignUp() {
           <span>Is Business</span>
         </label>
 
-        <Button type="submit" disabled={!isValid}>
-          Sign Up
+        <Button type="submit" disabled={loading} className="transition duration-200 bg-blue-600 hover:bg-blue-700">
+          {loading ? "Signing Up..." : "Sign Up"}
         </Button>
       </form>
     </div>

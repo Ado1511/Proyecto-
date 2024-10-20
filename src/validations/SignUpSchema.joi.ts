@@ -1,58 +1,58 @@
 import Joi from 'joi';
 
+// Esquema de validación para el registro
 export const SignUpJoiSchema = Joi.object({
   name: Joi.object({
-    first: Joi.string().required().messages({
-      'string.empty': `"First Name" is required`,
-    }),
-    middle: Joi.string().optional(),
-    last: Joi.string().required().messages({
-      'string.empty': `"Last Name" is required`,
-    }),
-  }),
+    first: Joi.string().min(2).max(256).required(),
+    middle: Joi.string().allow("").min(2).max(256), // Opcional, puede ser vacío
+    last: Joi.string().min(2).max(256).required(),
+  }).required(),
   phone: Joi.string()
-    .pattern(/^[0-9\s\-\(\)]+$/) // Permite solo números y algunos caracteres especiales
-    .min(9) // Asegúrate de tener un mínimo de 9 dígitos
+    .pattern(/^[0-9]+$/)
+    .min(9)
+    .max(11)
     .required()
     .messages({
-      'string.pattern.base': `"Phone number" must be a valid phone number`,
-      'string.min': `"Phone number" should have a minimum length of {#limit}`,
-      'any.required': `"Phone number" is a required field`,
+      'string.pattern.base': 'El teléfono solo puede contener números',
+      'string.min': 'El número de teléfono debe tener al menos 9 dígitos',
+      'string.max': 'El número de teléfono debe tener como máximo 11 dígitos',
     }),
-  email: Joi.string().email({ tlds: { allow: false } }).required().messages({
-    'string.email': `"Email" must be a valid email`,
-    'string.empty': `"Email" is required`,
-  }),
-  password: Joi.string().min(8).required().messages({
-    'string.min': `"Password" should have a minimum length of {#limit}`,
-    'string.empty': `"Password" is required`,
-  }),
-  confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
-    'any.only': `"Confirm Password" must match "Password"`,
-    'string.empty': `"Confirm Password" is required`,
-  }),
+  email: Joi.string()
+    .email({ tlds: { allow: false } }) // Deshabilitar TLDs
+    .min(5)
+    .required()
+    .messages({
+      'string.email': 'Por favor, proporciona un correo electrónico válido',
+      'string.min': 'El correo electrónico debe tener al menos 5 caracteres',
+    }),
+  password: Joi.string()
+    .min(7)
+    .max(20)
+    .pattern(/^(?=.*[0-9])(?=.*[!@#$%^&*])/)
+    .required()
+    .messages({
+      'string.min': 'La contraseña debe tener al menos 7 caracteres',
+      'string.max': 'La contraseña no puede tener más de 20 caracteres',
+      'string.pattern.base': 'La contraseña debe contener al menos un número y un carácter especial',
+    }),
+  confirmPassword: Joi.string()
+    .valid(Joi.ref('password'))
+    .required()
+    .messages({
+      'any.only': 'Las contraseñas deben coincidir',
+    }),
+  image: Joi.object({
+    url: Joi.string().uri().allow(""), // URL opcional
+    alt: Joi.string().min(2).max(256).allow(""), // Texto alternativo opcional
+  }).optional(),
   address: Joi.object({
-    street: Joi.string().required().messages({
-      'string.empty': `"Street" is required`,
-    }),
-    city: Joi.string().required().messages({
-      'string.empty': `"City" is required`,
-    }),
-    state: Joi.string().required().messages({
-      'string.empty': `"State" is required`,
-    }),
-    country: Joi.string().required().messages({
-      'string.empty': `"Country" is required`,
-    }),
-    houseNumber: Joi.number().integer().min(1).required().messages({
-      'number.base': `"House Number" must be a number`,
-      'number.min': `"House Number" must be at least 1`,
-      'any.required': `"House Number" is a required field`,
-    }),
-    zip: Joi.number().integer().required().messages({
-      'number.base': `"Zip Code" must be a number`,
-      'any.required': `"Zip Code" is a required field`,
-    }),
-  }),
+    state: Joi.string().allow("").min(2).max(256), // Opcional
+    country: Joi.string().min(2).max(256).required(),
+    city: Joi.string().min(2).max(256).required(),
+    street: Joi.string().min(2).max(256).required(),
+    houseNumber: Joi.number().min(1).required(), // Se asume que la casa tiene un número válido
+    zip: Joi.number().optional() // Cambia según el formato de código postal
+  }).required(),
   isBusiness: Joi.boolean().required(),
 });
+
