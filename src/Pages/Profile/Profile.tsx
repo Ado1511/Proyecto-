@@ -64,8 +64,8 @@ const Profile = () => {
     };
 
     return (
-    <div className="flex flex-col items-center justify-start gap-10 mb-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
-            <h1 className="mb-4 text-2xl font-bold text-center">Profile Page</h1>
+    <div className="flex flex-col items-center justify-start gap-10 m-auto " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+            <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Profile Page</h1>
             <div className="flex justify-center mt-10">
                 <div className="p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96">
                     <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">User Profile</h2>

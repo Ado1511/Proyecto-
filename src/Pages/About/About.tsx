@@ -3,7 +3,7 @@ import { Card } from "flowbite-react";
 const About = () => {
 return (
     <div className="flex flex-col items-center justify-start gap-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
-<h1 className="text-4xl font-bold">About Us</h1>
+<h1 className="mt-5 mb-4 text-4xl font-bold text-dark">About Us</h1>
 <p className="max-w-4xl text-lg text-center">
         Welcome to our platform! We are passionate about bringing you the best experience with our card collection. Our mission is to provide valuable content and easy-to-use features for all of our users.
     </p>

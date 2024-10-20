@@ -90,9 +90,9 @@ function SignUp() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full p-5 bg-orange-400">
-      <h1 className="mb-4 text-4xl font-bold text-white">Sign Up</h1>
-      <p className="mb-6 text-lg text-white">Join the amazing world of BizSnap</p>
+    <div className="flex flex-col items-center justify-center h-full p-5" style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+      <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Sign Up</h1>
+      <p className="mb-6 text-lg text-dark">Join the amazing world of BizSnap</p>
       <form
         className="flex flex-col w-full h-full max-w-md p-6 mb-10 bg-white rounded-lg shadow-lg"
         onSubmit={handleSubmit(submit)}

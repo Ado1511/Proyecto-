@@ -58,7 +58,7 @@ function SignIn() {
 
   return (
     <div className="flex flex-col items-center justify-start gap-2 mb-20" style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
-      <h1 className="text-2xl">Sign In</h1>
+      <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Sign In</h1>
       <p className="text-lg">Sign In to the amazing world of BizSnap</p>
       <form
         className="flex flex-col w-2/5 gap-4 p-4 m-auto mt-20 bg-white rounded-lg shadow-lg"

@@ -63,7 +63,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center justify-start gap-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
-      <h1 className="text-2xl">Home Page</h1>
+      <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Home Page</h1>
       <p className="text-lg">Welcome Home!</p>
       {user.isLoggedIn && <p className="text-lg"></p>}
 

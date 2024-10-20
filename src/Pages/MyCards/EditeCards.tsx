@@ -40,8 +40,8 @@ const EditCard: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-start gap-2 p-4 bg-orange-400">
-            <h1 className="text-2xl">Edit Card</h1>
+        <div className="flex flex-col items-center justify-start gap-2 p-4" style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+            <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Edit Card</h1>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-2/5 gap-4">
                 <FloatingLabel label="Title" variant="standard">
                     <input type="text" {...register("title")} className="input" />
