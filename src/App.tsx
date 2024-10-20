@@ -10,13 +10,14 @@ import { TRootState } from "./Store/BigPie";
 import CardDetails from "./Pages/CardDetails/CardDetails";
 import Favorites from "./Pages/Favorites/Favorites";
 import MyCards from "./Pages/MyCards/MyCards";
-import CreateCard from "./Pages/CreateCard/CreateCard";
+import CreateCard from "./Pages/CreateCard/CreateCard"; 
 import { useEffect, useState } from "react"; 
 import { decode } from "./Services/tokenService";
 import axios from "axios";
 import { userActions } from "./Store/UserSlice";
 import SignUp from "./Pages/SingUp/SingUp";
 import About from "./Pages/About/About";
+import EditCard from "./Pages/MyCards/EditeCards";
 
 function App() {
   const user = useSelector((state: TRootState) => state.UserSlice.user);
@@ -55,10 +56,8 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/card/:id" element={<CardDetails />} />
         <Route path="/signup" element={<SignUp />} />
-      
-
-
-
+        <Route path="/editcard/:id" element={<RouteGuard user={user!}><EditCard /></RouteGuard>} /> {/* Nueva ruta para editar tarjetas */}
+        
         <Route
           path="/profile"
           element={<RouteGuard user={user!}><Profile /></RouteGuard>} />
@@ -76,7 +75,6 @@ function App() {
           element={<RouteGuard user={user!}><Favorites /></RouteGuard>} />
       </Routes>
       
-
       <Footer />
     </div>
   );

@@ -13,15 +13,28 @@ const EditCard: React.FC = () => {
     useEffect(() => {
         const fetchCardData = async () => {
             try {
+                console.log(`Fetching card data for ID: ${id}`); // Agregar log para verificar ID
                 const res = await axios.get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`);
                 const card = res.data;
 
-                // Establecer los valores en el formulario
+                // Verifica que card tenga los datos esperados
+                console.log("Fetched card data:", card);
                 setValue('title', card.title);
                 setValue('subtitle', card.subtitle);
                 setValue('description', card.description);
-                setValue('image', card.image.url); // Cambia esto según tu estructura
+                setValue('phone', card.phone);
+                setValue('email', card.email);
+                setValue('web', card.web);
+                setValue('image.url', card.image.url);
+                setValue('image.alt', card.image.alt);
+                setValue('address.state', card.address.state);
+                setValue('address.country', card.address.country);
+                setValue('address.city', card.address.city);
+                setValue('address.street', card.address.street);
+                setValue('address.houseNumber', card.address.houseNumber);
+                setValue('address.zip', card.address.zip);
             } catch (error) {
+                console.error("Error fetching card data:", error); // Log de error
                 toast.error("Error fetching card data");
             }
         };
@@ -31,10 +44,15 @@ const EditCard: React.FC = () => {
 
     const onSubmit = async (data: any) => {
         try {
-            await axios.patch(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`, data);
+            await axios.patch(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`, data, {
+                headers: {
+                    'x-auth-token': 'YOUR_AUTH_TOKEN' // Asegúrate de reemplazar esto con el token correcto
+                }
+            });
             toast.success("Card updated successfully");
-            navigate("/mycards"); // Redirigir a la lista de tarjetas
+            navigate("/mycards"); 
         } catch (error) {
+            console.error("Error updating card:", error); 
             toast.error("Error updating card");
         }
     };
@@ -44,21 +62,9 @@ const EditCard: React.FC = () => {
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Edit Card</h1>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-2/5 gap-4">
                 <FloatingLabel label="Title" variant="standard">
-                    <input type="text" {...register("title")} className="input" />
+                    <input type="text" {...register("title")} className="input" required />
                 </FloatingLabel>
-
-                <FloatingLabel label="Subtitle" variant="standard">
-                    <input type="text" {...register("subtitle")} className="input" />
-                </FloatingLabel>
-
-                <FloatingLabel label="Description" variant="standard">
-                    <textarea {...register("description")} className="input" />
-                </FloatingLabel>
-
-                <FloatingLabel label="Image URL" variant="standard">
-                    <input type="text" {...register("image")} className="input" />
-                </FloatingLabel>
-
+                
                 <Button type="submit">Update Card</Button>
             </form>
         </div>
