@@ -73,7 +73,7 @@ const Favorites = () => {
     return (
         <div className="flex flex-col items-center justify-start gap-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Favorites</h1>
-            <p className="text-lg">Welcome to your Favorites</p>
+            <p className="mb-6 text-lg text-dark">Welcome to your Favorites</p>
             {user.isLoggedIn && <p className="text-lg"></p>}
 
             <div className="grid w-4/5 grid-cols-3 gap-3 m-auto">

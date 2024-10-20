@@ -88,7 +88,7 @@ const MyCards = () => {
     return (
         <div className="flex flex-col items-center justify-start gap-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">My Cards</h1>
-            <p className="text-lg"> These cards were made by you</p>
+            <p className="mb-6 text-lg text-dark"> These cards were made by you</p>
             {user.isLoggedIn && <p className="text-lg"></p>}
 
             <div className="flex flex-wrap w-3/5 gap-1 m-auto">
