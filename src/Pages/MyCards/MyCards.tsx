@@ -53,9 +53,6 @@ const MyCards = () => {
         return user && user.user ? card.likes.includes(user.user._id) : false;
     };
 
-    const navToCard = (id: string) => {
-        nav("/card/" + id);
-    };
 
     const getData = async () => {
         setLoading(true); 

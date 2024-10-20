@@ -73,7 +73,7 @@ const Home = () => {
           return (
             <Card 
               key={item._id}
-              className="w-5/6 m-auto max-h-250 h-[500px] ">
+              className="w-5/6 m-auto max-h-250 h-[500px] shadow-xl ">
               <img
                 onClick={() => navToCard(item._id)}
                 src={item.image.url}
