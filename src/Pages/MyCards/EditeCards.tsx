@@ -13,11 +13,11 @@ const EditCard: React.FC = () => {
     useEffect(() => {
         const fetchCardData = async () => {
             try {
-                console.log(`Fetching card data for ID: ${id}`); // Agregar log para verificar ID
+                console.log(`Fetching card data for ID: ${id}`); 
                 const res = await axios.get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`);
                 const card = res.data;
 
-                // Verifica que card tenga los datos esperados
+                
                 console.log("Fetched card data:", card);
                 setValue('title', card.title);
                 setValue('subtitle', card.subtitle);
