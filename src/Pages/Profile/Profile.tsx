@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { TRootState } from "../../Store/BigPie";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { Button, Textarea, TextInput, Card } from "flowbite-react";
+import { Card } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaEnvelope, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 
 const Profile = () => {
     const user = useSelector((state: TRootState) => state.UserSlice.user);
@@ -17,7 +14,7 @@ const Profile = () => {
         city: "",
         phone: "",
     });
-    const [loading, setLoading] = useState(false);
+    const [] = useState(false);
     const nav = useNavigate();
 
     useEffect(() => {

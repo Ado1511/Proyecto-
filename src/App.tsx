@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { decode } from "./Services/tokenService";
 import axios from "axios";
 import { userActions } from "./Store/UserSlice";
-import SignUp from "./Pages/SingUp/SingUp";
+import SignUp from "./Pages/SingUp/Register";
 import About from "./Pages/About/About";
 import EditCard from "./Pages/MyCards/EditeCards";
 
@@ -31,7 +31,7 @@ function App() {
       const decodedUser = decode(token); 
       const userId = decodedUser._id;
 
-      // Verifica si el token es válido al obtener los datos del usuario
+      
       axios
         .get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${userId}`)
         .then((response) => {
@@ -56,7 +56,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/card/:id" element={<CardDetails />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/editcard/:id" element={<RouteGuard user={user!}><EditCard /></RouteGuard>} /> {/* Nueva ruta para editar tarjetas */}
+        <Route path="/editcard/:id" element={<RouteGuard user={user!}><EditCard /></RouteGuard>} />
         
         <Route
           path="/profile"
