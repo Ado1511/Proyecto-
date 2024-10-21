@@ -6,9 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { FloatingLabel, Button } from "flowbite-react";
 
 const CreateCard = () => {
-
     const initialCardData = {
-
         title: "",
         subtitle: "",
         description: "",
@@ -32,29 +30,26 @@ const CreateCard = () => {
     const { register, handleSubmit, formState: { errors, isValid } } = useForm({
         defaultValues: initialCardData,
         mode: "onChange",
-        resolver: joiResolver(CreateCardSchema)
+        resolver: joiResolver(CreateCardSchema),
     });
 
-    const onSubmit = async (form: typeof initialCardData) => {
+    const onSubmit = async (form: any) => {
         try {
             const res = await axios.post("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards", form);
-
             localStorage.setItem("res", res.data);
             axios.defaults.headers.common['x-auth-token'] = res.data;
 
-            toast.success("a new business card has been created");
+            toast.success("A new business card has been created");
         } catch (error) {
-            toast.error("business card creation failed");
+            toast.error("Business card creation failed");
             console.log(error);
-        };
-
-    }
-
+        }
+    };
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 m-auto text-center bg-orange-300 rounded-lg shadow-lg">
-                <h1 className="text-4xl font-bold text-center text-gray-800"> Card Creation</h1>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 m-auto text-center rounded-lg shadow-lg" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+                <h1 className="text-4xl font-bold text-center text-gray-800">Card Creation</h1>
 
                 <div className="flex gap-3 m-auto">
                     <div className="flex flex-col">
@@ -82,18 +77,18 @@ const CreateCard = () => {
 
                 <div className="flex gap-3 m-auto">
                     <div className="flex flex-col">
-
                         <label htmlFor="message" className="block mb-2 text-sm font-medium text-center text-gray-900 dark:text-green-500">
-                            Description</label>
-
-                        <textarea id="message" {...register("description")}
+                            Description
+                        </label>
+                        <textarea
+                            id="message"
+                            {...register("description")}
                             className="block p-2.5 w-[500px] h-[200px] m-auto text-sm text-gray-900 bg-orange-200
                         rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500
                         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
                         dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none"
-                            placeholder="Write your card description here...">
-                        </textarea>
-
+                            placeholder="Write your card description here..."
+                        ></textarea>
                         <span className="mt-2 text-sm text-center text-red-800">{errors.description?.message}</span>
                     </div>
                 </div>
@@ -164,7 +159,7 @@ const CreateCard = () => {
                             type="text"
                             variant="standard"
                             {...register("address.country")}
-                            color={errors.image?.alt ? "error" : "success"}
+                            color={errors.address?.country ? "error" : "success"}
                         />
                         <span className="text-sm text-red-800">{errors.address?.country?.message}</span>
                     </div>
@@ -235,8 +230,7 @@ const CreateCard = () => {
                 <ToastContainer />
             </form>
         </>
-    )
-
+    );
 };
 
 export default CreateCard;
