@@ -62,7 +62,7 @@ const MyCards = () => {
     };
 
     const isLikedCard = (card: TCard) => {
-        return user?.user ? (card.likes ?? []).includes(user.user._id) : false;
+        return user && user.user ? (card.likes ?? []).includes(user.user._id) : false;
     };
 
     const getData = async () => {
@@ -79,23 +79,23 @@ const MyCards = () => {
     };
 
     const likeUnlikeCard = async (card: TCard) => {
-        if (!user || !user.user) {
-            toast.error("User is not logged in");
-            return;
-        }
-
         try {
             const res = await axios.patch(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${card._id}`);
             if (res.status === 200) {
                 const index = cards.indexOf(card);
                 const newCards = [...cards];
-
-                const ifLiked = newCards[index].likes?.includes(user.user._id);
+                const ifLiked = newCards[index].likes?.includes(user.user!._id) ?? false;
                 if (ifLiked) {
-                    newCards[index].likes?.splice(newCards[index].likes.indexOf(user.user._id), 1);
+                    if (newCards[index].likes) {
+                        newCards[index].likes.splice(newCards[index].likes.indexOf(user.user!._id), 1);
+                    }
                     toast.success("Card unliked");
                 } else {
-                    newCards[index].likes?.push(user.user._id);
+                    if (newCards[index].likes) {
+                        newCards[index].likes.push(user.user!._id);
+                    } else {
+                        newCards[index].likes = [user.user!._id];
+                    }
                     toast.success("Card liked");
                 }
                 setCards(newCards);
@@ -107,7 +107,7 @@ const MyCards = () => {
 
     const deleteCard = async (card: TCard) => {
         try {
-            const res = await axios.delete(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${card._id}`);
+            const res = await axios.delete(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards${card._id}`);
             if (res) {
                 setCards(cards.filter(c => c._id !== card._id));
                 toast.success("Card deleted");
@@ -130,9 +130,10 @@ const MyCards = () => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-start gap-10 p-6 responsive-container" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+        <div className="flex flex-col items-center justify-start gap-10" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">My Cards</h1>
             <p className="mb-6 text-lg text-dark">These cards were made by you</p>
+            {user.isLoggedIn && <p className="text-lg"></p>}
 
             <div className="flex flex-wrap w-3/5 gap-1 m-auto">
                 {searchCards().map((item: TCard) => (
