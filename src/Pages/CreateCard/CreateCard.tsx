@@ -51,8 +51,8 @@ const CreateCard = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 m-auto text-center rounded-lg shadow-lg" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
                 <h1 className="text-4xl font-bold text-center text-gray-800">Card Creation</h1>
 
-                <div className="flex gap-3 m-auto">
-                    <div className="flex flex-col">
+                <div className="flex flex-col gap-3 m-auto md:flex-row">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Title"
                             type="text"
@@ -63,7 +63,7 @@ const CreateCard = () => {
                         <span className="text-sm text-red-800">{errors.title?.message}</span>
                     </div>
 
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Subtitle"
                             type="text"
@@ -75,7 +75,7 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-3 m-auto">
+                <div className="flex flex-col m-auto">
                     <div className="flex flex-col">
                         <label htmlFor="message" className="block mb-2 text-sm font-medium text-center text-gray-900 dark:text-green-500">
                             Description
@@ -83,7 +83,7 @@ const CreateCard = () => {
                         <textarea
                             id="message"
                             {...register("description")}
-                            className="block p-2.5 w-[500px] h-[200px] m-auto text-sm text-gray-900 bg-orange-200
+                            className="block p-2.5 w-full md:w-[500px] h-[200px] m-auto text-sm text-gray-900 bg-orange-200
                         rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500
                         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
                         dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none"
@@ -93,8 +93,8 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-3 m-auto">
-                    <div className="flex flex-col">
+                <div className="flex flex-col gap-3 m-auto md:flex-row">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Phone"
                             type="number"
@@ -105,7 +105,7 @@ const CreateCard = () => {
                         <span className="text-sm text-red-800">{errors.phone?.message}</span>
                     </div>
 
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Email"
                             type="email"
@@ -117,8 +117,8 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-3 m-auto">
-                    <div className="flex flex-col">
+                <div className="flex flex-col gap-3 m-auto md:flex-row">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Web"
                             type="text"
@@ -129,7 +129,7 @@ const CreateCard = () => {
                         <span className="text-sm text-red-800">{errors.web?.message}</span>
                     </div>
 
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Image URL"
                             type="text"
@@ -141,8 +141,8 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-3 m-auto">
-                    <div className="flex flex-col">
+                <div className="flex flex-col gap-3 m-auto md:flex-row">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Image Alt"
                             type="text"
@@ -153,7 +153,7 @@ const CreateCard = () => {
                         <span className="text-sm text-red-800">{errors.image?.alt?.message}</span>
                     </div>
 
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Country"
                             type="text"
@@ -165,8 +165,8 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-3 m-auto">
-                    <div className="flex flex-col">
+                <div className="flex flex-col gap-3 m-auto md:flex-row">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="City"
                             type="text"
@@ -177,7 +177,7 @@ const CreateCard = () => {
                         <span className="text-sm text-red-800">{errors.address?.city?.message}</span>
                     </div>
 
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="State"
                             type="text"
@@ -189,8 +189,8 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-3 m-auto">
-                    <div className="flex flex-col">
+                <div className="flex flex-col gap-3 m-auto md:flex-row">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Street"
                             type="text"
@@ -201,7 +201,7 @@ const CreateCard = () => {
                         <span className="text-sm text-red-800">{errors.address?.street?.message}</span>
                     </div>
 
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="House Number"
                             type="number"
@@ -213,8 +213,8 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-3 m-auto">
-                    <div className="flex flex-col">
+                <div className="flex flex-col gap-3 m-auto md:flex-row">
+                    <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="ZIP"
                             type="number"
@@ -226,7 +226,7 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <Button type="submit" disabled={!isValid} className="m-auto w-[20%]">Create Card</Button>
+                <Button type="submit" disabled={!isValid} className="m-auto w-full md:w-[20%]">Create Card</Button>
                 <ToastContainer />
             </form>
         </>

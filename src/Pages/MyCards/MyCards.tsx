@@ -12,10 +12,22 @@ import { TiHeartOutline } from "react-icons/ti";
 import { CiCirclePlus } from "react-icons/ci";
 
 // Componente para cada tarjeta
-const CardComponent = ({ item, onEdit, onLike, onDelete, isLiked }: { item: TCard; onEdit: () => void; onLike: () => void; onDelete: () => void; isLiked: boolean }) => (
+const CardComponent = ({
+    item,
+    onEdit,
+    onLike,
+    onDelete,
+    isLiked,
+}: {
+    item: TCard;
+    onEdit: () => void;
+    onLike: () => void;
+    onDelete: () => void;
+    isLiked: boolean;
+}) => (
     <Card key={item._id} className="w-2/6 m-auto">
         <img
-            onClick={() => onEdit()}
+            onClick={onEdit}
             src={item.image.url}
             alt={item.image.alt}
             className="h-[200px] object-fill cursor-pointer"
@@ -50,12 +62,11 @@ const MyCards = () => {
     };
 
     const isLikedCard = (card: TCard) => {
-        return user && user.user ? card.likes.includes(user.user._id) : false;
+        return user?.user ? (card.likes ?? []).includes(user.user._id) : false;
     };
 
-
     const getData = async () => {
-        setLoading(true); 
+        setLoading(true);
         try {
             axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
             const res = await axios.get("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards");
@@ -63,22 +74,28 @@ const MyCards = () => {
         } catch (error) {
             toast.error("Error fetching cards");
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
     const likeUnlikeCard = async (card: TCard) => {
+        if (!user || !user.user) {
+            toast.error("User is not logged in");
+            return;
+        }
+
         try {
-            const res = await axios.patch("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/" + card._id);
+            const res = await axios.patch(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${card._id}`);
             if (res.status === 200) {
                 const index = cards.indexOf(card);
                 const newCards = [...cards];
-                const ifLiked = newCards[index].likes.includes(user.user!._id);
+
+                const ifLiked = newCards[index].likes?.includes(user.user._id);
                 if (ifLiked) {
-                    newCards[index].likes.splice(newCards[index].likes.indexOf(user.user!._id), 1);
+                    newCards[index].likes?.splice(newCards[index].likes.indexOf(user.user._id), 1);
                     toast.success("Card unliked");
                 } else {
-                    newCards[index].likes.push(user.user!._id);
+                    newCards[index].likes?.push(user.user._id);
                     toast.success("Card liked");
                 }
                 setCards(newCards);
@@ -90,7 +107,7 @@ const MyCards = () => {
 
     const deleteCard = async (card: TCard) => {
         try {
-            const res = await axios.delete("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/" + card._id);
+            const res = await axios.delete(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${card._id}`);
             if (res) {
                 setCards(cards.filter(c => c._id !== card._id));
                 toast.success("Card deleted");
@@ -109,18 +126,18 @@ const MyCards = () => {
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>; 
+        return <div>Loading...</div>;
     }
 
     return (
-        <div className="flex flex-col items-center justify-start gap-10" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+        <div className="flex flex-col items-center justify-start gap-10 p-6 responsive-container" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">My Cards</h1>
             <p className="mb-6 text-lg text-dark">These cards were made by you</p>
-            {user.isLoggedIn && <p className="text-lg"></p>}
 
             <div className="flex flex-wrap w-3/5 gap-1 m-auto">
                 {searchCards().map((item: TCard) => (
                     <CardComponent
+                        key={item._id}
                         item={item}
                         onEdit={() => nav(`/editcard/${item._id}`)}
                         onLike={() => likeUnlikeCard(item)}
@@ -138,8 +155,3 @@ const MyCards = () => {
 };
 
 export default MyCards;
-
-
-
-
-

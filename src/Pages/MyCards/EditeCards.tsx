@@ -1,89 +1,141 @@
-import { useState } from "react";
+import { joiResolver } from "@hookform/resolvers/joi/src/joi.js";
 import { useForm } from "react-hook-form";
-import { Button, TextInput } from "flowbite-react";
-import { TCard } from '../../Types/TCard';
-import { updateCard } from '../../validations/UpdateCard.joi';
-import { toast } from "react-toastify";
+import { CreateCardSchema } from "../../validations/CreateCardSchema";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import { FloatingLabel, Button } from "flowbite-react";
 
-type EditCardProps = {
-  cardId: string;  
-  token: string;  
-};
+interface Card {
+    id: string;
+    title?: string;
+    subtitle?: string;
+    description?: string;
+    phone?: string;
+    email?: string;
+    web?: string;
+    image?: { url?: string; alt?: string };
+    address?: {
+        state?: string;
+        country?: string;
+        city?: string;
+        street?: string;
+        houseNumber?: number;
+        zip?: number;
+    };
+    bizNumber?: number;
+}
 
-const EditCard: React.FC<EditCardProps> = ({ cardId, token }) => {
-  const [loading, setLoading] = useState(false);
-  
-  const { register, handleSubmit, formState: { errors } } = useForm<TCard>();
+type CardField = keyof Card | 'image.url' | 'address.street' | 'address.city' | 'address.state' | 'address.country' | 'address.houseNumber' | 'address.zip';
 
-  const onSubmit = async (data: TCard) => {
-    setLoading(true);
-    try {
-      console.log("Card ID:", cardId);  // Verifica que cardId no sea undefined
-      console.log("Token:", token);      // Verifica que token no sea undefined
-      
-      await updateCard(cardId, data, token);
-      toast.success("Card updated successfully!");
-    } catch (error) {
-      console.error('Error updating card:', error);
-      toast.error("Error updating card. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+const EditCard = ({ card }: { card: Card | undefined }) => {
+    const { register, handleSubmit, formState: { errors, isValid } } = useForm<Card>({
+        defaultValues: card || {
+            title: '',
+            subtitle: '',
+            description: '',
+            phone: '',
+            email: '',
+            web: '',
+            image: { url: '', alt: '' },
+            address: { state: '', country: '', city: '', street: '', houseNumber: undefined, zip: undefined },
+            bizNumber: undefined,
+        },
+        mode: "onChange",
+        resolver: joiResolver(CreateCardSchema),
+    });
 
-  return (
-    <div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-md p-6 m-auto">
-        <h1 className="mt-2 mb-5 text-4xl font-bold text-dark">Edit Card</h1>
+    const onSubmit = async (form: any) => {
+        if (!card?.id) {
+            toast.error("Card ID is not defined");
+            return; // Evitar hacer la solicitud si card.id no está definido
+        }
 
-        {/* Title */}
-        <TextInput
-          {...register('title', { required: "This field is required" })}
-          placeholder="Title"
-          className="mb-2"
-          color={errors.title ? "failure" : "gray"} />
-        {errors.title && <p className="text-red-600">{errors.title.message}</p>}
+        try {
+            const filteredData = Object.fromEntries(Object.entries(form).filter(([_, v]) => v !== '' && v !== undefined));
+            await axios.put(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${card.id}`, filteredData);
+            toast.success("The business card has been updated");
+        } catch (error) {
+            toast.error("Business card update failed");
+            console.error(error);
+        }
+    };
 
-        {/* Subtitle */}
-        <TextInput
-          {...register('subtitle', { required: "This field is required" })}
-          placeholder="Subtitle"
-          className="mb-2"
-          color={errors.subtitle ? "failure" : "gray"} />
-        {errors.subtitle && <p className="text-red-600">{errors.subtitle.message}</p>}
+    if (!card) return <div className="text-center">Loading...</div>;
 
-        {/* Description */}
-        <textarea
-          {...register('description', { required: "This field is required" })}
-          placeholder="Description"
-          className={`mb-2 ${errors.description ? "border-red-600" : "border-gray-300"} border p-2 rounded-md w-full`} />
-        {errors.description && <p className="text-red-600">{errors.description.message}</p>}
+    return (
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 p-6 m-auto text-center rounded-lg shadow-lg md:max-w-2xl"
+            style={{ background: `linear-gradient(#ff9846, #ffffff)` }}
+        >
+            <h1 className="text-4xl font-bold text-gray-800">Edit Card</h1>
 
-        {/* Phone */}
-        <TextInput
-          {...register('phone')}
-          placeholder="Phone"
-          type="tel"
-          className="mb-2"
-          color={errors.phone ? "failure" : "gray"} />
-        {errors.phone && <p className="text-red-600">{errors.phone.message}</p>}
+            <div className="flex flex-col gap-3 md:flex-row">
+                <div className="flex flex-col w-full md:w-1/2">
+                    <FloatingLabel
+                        label="Title"
+                        variant="standard"
+                        {...register("title")}
+                        color={errors.title ? "error" : "success"}
+                    />
+                    <span className="text-sm text-red-800">{errors.title?.message}</span>
+                </div>
 
-        {/* Email */}
-        <TextInput
-          {...register('email', { required: "This field is required" })}
-          placeholder="Email"
-          type="email"
-          className="mb-2"
-          color={errors.email ? "failure" : "gray"} />
-        {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+                <div className="flex flex-col w-full md:w-1/2">
+                    <FloatingLabel
+                        label="Subtitle"
+                        variant="standard"
+                        {...register("subtitle")}
+                        color={errors.subtitle ? "error" : "success"}
+                    />
+                    <span className="text-sm text-red-800">{errors.subtitle?.message}</span>
+                </div>
+            </div>
 
-        {/* Submit Button */}
-        <Button type="submit" className="mt-4" disabled={loading}>
-          {loading ? "Updating..." : "Update Card"}
-        </Button>
-      </form>
-    </div>
-  );
+            <div className="flex flex-col m-auto">
+                <label htmlFor="description" className="block mb-2 text-sm font-medium text-center text-gray-900">Description</label>
+                <textarea
+                    id="description"
+                    {...register("description")}
+                    className="block p-2.5 w-full h-[200px] m-auto text-sm text-gray-900 bg-orange-200 rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500 resize-none"
+                    placeholder="Write your card description here..."
+                ></textarea>
+                <span className="mt-2 text-sm text-center text-red-800">{errors.description?.message}</span>
+            </div>
+
+            {/* Campos adicionales */}
+            {['phone', 'email', 'web'].map(field => (
+                <div key={field} className="flex flex-col">
+                    <FloatingLabel
+                        label={field.charAt(0).toUpperCase() + field.slice(1)}
+                        variant="standard"
+                        {...register(field as CardField)}
+                        color={errors[field as keyof Card] ? "error" : "success"}
+                    />
+                    <span className="text-sm text-red-800">{errors[field as keyof Card]?.message}</span>
+                </div>
+            ))}
+
+            {(['image.url', 'address.street', 'address.city', 'address.state', 'address.country', 'address.houseNumber', 'address.zip'] as CardField[]).map(field => (
+                <div key={field} className="flex flex-col">
+                    <FloatingLabel
+                        label={field.replace('.', ' ').replace(/^\w/, (c) => c.toUpperCase())}
+                        variant="standard"
+                        {...register(field)}
+                        color={errors[field.split('.')[0] as keyof Card] ? "error" : "success"}
+                    />
+                    <span className="text-sm text-red-800">
+                        {field.includes('.') ?
+                            (errors[field.split('.')[0] as keyof Card] as any)?.[field.split('.')[1]]?.message || '' :
+                            errors[field as keyof Card]?.message || ''}
+                    </span>
+                </div>
+            ))}
+
+            <Button type="submit" disabled={!isValid} className="m-auto w-full md:w-[20%]">Update Card</Button>
+            <ToastContainer />
+        </form>
+    );
 };
 
 export default EditCard;

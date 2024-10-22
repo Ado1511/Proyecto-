@@ -59,7 +59,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/card/:id" element={<CardDetails />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/editcard/:id" element={<RouteGuard user={user!}><EditCard /></RouteGuard>} />
+        <Route path="/editcard/:id" element={<RouteGuard user={user!}><EditCard card={undefined} /></RouteGuard>} />
         <Route path="/cards" element={<RouteGuard user={user!}><CardList /></RouteGuard>} />
 
         
