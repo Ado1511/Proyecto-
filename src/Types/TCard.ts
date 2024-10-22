@@ -1,24 +1,25 @@
+// Types/TCard.ts
 export type TCard = {
   _id: string;
   title: string;
-  subtitle: string;
+  subtitle?: string; // Optional
   description: string;
-  phone: string;
-  email: string;
-  web: string;
-  image: {
+  phone?: string; // Optional
+  email?: string; // Optional
+  web?: string; // Optional
+  image?: {
     url: string;
-    alt: string;
+    alt?: string; // Optional
   };
-  address: {
-    state: string;
-    country: string;
-    city: string;
-    street: string;
-    houseNumber: number;
-    zip: number;
+  address?: {
+    state?: string; // Optional
+    country?: string; // Optional
+    city?: string; // Optional
+    street?: string; // Optional
+    houseNumber?: number; // Optional
+    zip?: number; // Optional
   };
-  bizNumber: number;
-  likes: string[];
-  user_id: string;
+  bizNumber?: number; // Optional
+  likes?: string[]; // Make likes optional
+  user_id: string; // Assuming this is required
 };
