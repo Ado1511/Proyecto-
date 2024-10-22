@@ -14,7 +14,6 @@ const Profile = () => {
         city: "",
         phone: "",
     });
-    const [] = useState(false);
     const nav = useNavigate();
 
     useEffect(() => {
@@ -26,16 +25,20 @@ const Profile = () => {
                 email: user.email,
                 userType: user.isBusiness ? "Business" : user.isAdmin ? "Admin" : user.isRegular ? "Regular" : "",
                 aboutMe: user.about || "",
-                city: user.city || "", // Nuevo campo
-                phone: user.phone || "", // Nuevo campo
+                city: user.city || "",
+                phone: user.phone || "",
             });
         }
     }, [user, nav]);
 
+    const handleEditProfile = () => {
+        nav('/edit-profile'); // Redirigir a la página de edición de perfil
+    };
+
     return (
         <div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Profile Page</h1>
-            <div className="flex justify-center mt-10 mb-5"> {/* Agregando margen inferior */}
+            <div className="flex justify-center mt-10 mb-5">
                 <Card className="p-6 bg-white border border-gray-300 rounded-lg shadow-lg w-96">
                     <h2 className="mb-4 text-xl font-bold text-gray-900">User Profile</h2>
                     <div>
@@ -46,6 +49,12 @@ const Profile = () => {
                         <p className="mb-4"><strong>About Me:</strong> {profileData.aboutMe}</p>
                         <p className="mb-4"><strong>User Type:</strong> {profileData.userType}</p>
                     </div>
+                    <button 
+                        onClick={handleEditProfile}
+                        className="w-full p-2 mt-4 text-white transition duration-300 bg-blue-500 rounded hover:bg-blue-600"
+                    >
+                        Update Profile
+                    </button>
                 </Card>
             </div>
         </div>
