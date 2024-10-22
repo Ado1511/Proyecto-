@@ -19,15 +19,21 @@ const EditCard: React.FC = () => {
   });
 
   useEffect(() => {
+    if (!cardId) {
+      console.error('No cardId found');
+      toast.error("No cardId found");
+      return;
+    }
+
     const fetchCard = async () => {
       try {
-        const response = await axios.get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/65424d35cb6bcb58697bab4a`, {
+        const response = await axios.get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         setInitialData(response.data);
-        reset(response.data); // Populate the form with existing data
+        reset(response.data);
       } catch (error) {
         console.error('Error fetching card:', error);
         toast.error("Error fetching card data.");
@@ -40,9 +46,9 @@ const EditCard: React.FC = () => {
   const onSubmit = async (data: TCard) => {
     setLoading(true);
     try {
-      // Exclude likes from update if not needed
-      const { likes, ...dataToUpdate } = data; // Handle likes appropriately
-      await updateCard(cardId, { ...dataToUpdate, user_id: initialData?.user_id }, token);
+      const { likes, ...dataToUpdate } = data; // Exclude likes from update
+      const userId = initialData?.user_id ?? ''; // Default to an empty string if undefined
+      await updateCard(cardId, { ...dataToUpdate, user_id: userId }, token);
       toast.success("Card updated successfully!");
       reset();
     } catch (error) {
@@ -59,7 +65,7 @@ const EditCard: React.FC = () => {
     <div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-md p-6 m-auto">
         <h1 className="mt-2 mb-5 text-4xl font-bold text-dark">Edit Card</h1>
-
+        
         {/* Title */}
         <TextInput
           {...register('title')}
@@ -140,13 +146,13 @@ const EditCard: React.FC = () => {
   );
 };
 
+// Update card function
+const updateCard = async (_cardId: string | undefined, updatedData: TCard, token: string) => {
+  await axios.put(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${_cardId}`, updatedData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export default EditCard;
-
-
-
-
-
-function updateCard(_cardId: string | undefined, _arg1: { user_id: string | undefined; _id: string; title: string; subtitle?: string; description: string; phone?: string; email?: string; web?: string; image?: { url: string; alt?: string; }; address?: { state?: string; country?: string; city?: string; street?: string; houseNumber?: number; zip?: number; }; bizNumber?: number; }, token: string) {
-  throw new Error("Function not implemented.");
-}
-

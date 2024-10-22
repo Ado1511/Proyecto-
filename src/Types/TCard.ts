@@ -1,25 +1,16 @@
-// Types/TCard.ts
 export type TCard = {
-  _id: string;
   title: string;
-  subtitle?: string; // Optional
-  description: string;
-  phone?: string; // Optional
-  email?: string; // Optional
-  web?: string; // Optional
-  image?: {
+  subtitle?: string;
+  description: string; // Asegura que la descripción siempre sea una cadena
+  image: {
     url: string;
-    alt?: string; // Optional
   };
-  address?: {
-    state?: string; // Optional
-    country?: string; // Optional
-    city?: string; // Optional
-    street?: string; // Optional
-    houseNumber?: number; // Optional
-    zip?: number; // Optional
+  phone?: string;
+  email?: string;
+  web?: string;
+  address: {
+    city: string; // Se requiere una ciudad
   };
-  bizNumber?: number; // Optional
-  likes?: string[]; // Make likes optional
-  user_id: string; // Assuming this is required
+  user_id: string; // El ID del usuario es obligatorio
+  likes?: string[]; // Likes son opcionales
 };
