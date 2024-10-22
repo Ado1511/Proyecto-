@@ -22,7 +22,7 @@ const Home = () => {
 
   const isLikedCard = (card: TCard) => {
     if (user && user.user) {
-      return card.likes.includes(user.user._id);
+      return card.likes?.includes(user.user._id) ?? false;
     } else return false;
   }
 
@@ -42,13 +42,15 @@ const Home = () => {
     if (res.status === 200) {
 
       const index = cards.indexOf(card);
-      const ifLiked = cards[index].likes.includes(user.user!._id);
+      const ifLiked = cards[index].likes?.includes(user.user!._id) ?? false;
       const newCards = [...cards];
       if (ifLiked) {
-        newCards[index].likes.splice(index);
+        if (newCards[index].likes) {
+          newCards[index].likes.splice(index);
+        }
         toast.success("card unliked");
       } else {
-        newCards[index].likes.push(user.user!._id);
+        newCards[index].likes?.push(user.user!._id);
         toast.success("card liked");
       }
       setCards(newCards);

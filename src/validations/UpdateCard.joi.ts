@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import { TCard } from '../Types/TCard';
 
 export const cardSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -23,3 +24,7 @@ export const cardSchema = yup.object().shape({
   likes: yup.array().of(yup.string()).optional(), // Make likes optional
   user_id: yup.string().required("User ID is required"),
 });
+
+export const updateCard = async (_cardId: string, _data: TCard, token: string) => {
+  // Function implementation goes here
+};
