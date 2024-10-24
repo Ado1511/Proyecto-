@@ -19,13 +19,12 @@ import SignUp from "./Pages/SingUp/Register";
 import About from "./Pages/About/About";
 import EditCard from "./Pages/MyCards/EditeCards";
 import CardList from "./Pages/Paguinacion/CardList";
-
-
+import EditProfile from "./Pages/Profile/EditeProfile"; 
 
 function App() {
   const user = useSelector((state: TRootState) => state.UserSlice.user);
   const dispatch = useDispatch();
-  const [isDarkMode, setIsDarkMode] = useState(false); // Estado para el modo nocturno
+  const [isDarkMode, setIsDarkMode] = useState(false); 
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,11 +33,10 @@ function App() {
       const decodedUser = decode(token); 
       const userId = decodedUser._id;
 
-      
       axios
         .get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${userId}`)
         .then((response) => {
-          dispatch(userActions.login(response.data)); // Restaura el usuario en el estado global
+          dispatch(userActions.login(response.data)); 
         })
         .catch((error) => {
           console.error("Error restoring session:", error);
@@ -47,7 +45,7 @@ function App() {
   }, [dispatch]);
 
   const toggleDarkMode = () => {
-    setIsDarkMode(prevMode => !prevMode); // Alternar el modo nocturno
+    setIsDarkMode(prevMode => !prevMode); 
   };
 
   return (
@@ -59,13 +57,16 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/card/:id" element={<CardDetails />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/editcard/:id" element={<RouteGuard user={user!}><EditCard card={undefined} /></RouteGuard>} />
+        <Route path="/editcard/:id" element={<RouteGuard user={user!}><EditCard /></RouteGuard>} />
         <Route path="/cards" element={<RouteGuard user={user!}><CardList /></RouteGuard>} />
-
         
         <Route
           path="/profile"
           element={<RouteGuard user={user!}><Profile /></RouteGuard>} />
+
+        <Route
+          path="/EditProfile" 
+          element={<RouteGuard user={user!}><EditProfile /></RouteGuard>} />
 
         <Route
           path="/mycards"
@@ -79,7 +80,7 @@ function App() {
           path="/favorites"
           element={<RouteGuard user={user!}><Favorites /></RouteGuard>} />
       </Routes>
-      
+
       <Footer />
     </div>
   );

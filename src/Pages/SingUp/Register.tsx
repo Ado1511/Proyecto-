@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { Button, TextInput, Checkbox } from "flowbite-react";
-import RegisterSchema from "../../validations/RegisterSchema.joi"; // Update the path to the correct location
+import RegisterSchema from "../../validations/RegisterSchema.joi"; 
 import { toast } from "react-toastify";
 import axios from "axios";
 

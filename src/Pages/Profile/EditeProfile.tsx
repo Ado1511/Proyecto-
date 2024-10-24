@@ -1,150 +1,236 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { TRootState } from '../../Store/BigPie';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import EditUserSchema from '../../validations/EditUserSchema'; // Asegúrate de que la ruta sea correcta
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { Button, TextInput } from "flowbite-react";
+import EditProfileSchema from "../../validations/EditUserSchema"; 
+import { toast } from "react-toastify";
+import axios from "axios";
+
+type FormData = {
+  email: string;
+  name: {
+    first: string;
+    middle: string;
+    last: string;
+  };
+  phone: string;
+  address: {
+    country: string;
+    state: string;
+    city: string;
+    street: string;
+    houseNumber: number;
+    zip: number;
+  };
+  image: {
+    url: string;
+    alt: string;
+  };
+  isBusiness: boolean;
+};
 
 const EditProfile = () => {
-    const [userData, setUserData] = useState({
-        name: {
-            first: '',
-            middle: '',
-            last: ''
+  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState<FormData | null>(null);
+  const userId = "6559f2dbdedf2db2b52bde42"; // Aquí puedes obtener el ID desde el localStorage
+  const authToken = localStorage.getItem('authToken'); // Asegúrate de almacenar el token de autenticación
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: joiResolver(EditProfileSchema),
+  });
+
+  // Obtener los datos del usuario
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${userId}`);
+        setUserData(response.data);
+        reset(response.data); // Pre-rellenar el formulario con los datos del usuario
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch user data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [reset, userId]);
+
+  const onSubmit = async (data: FormData) => {
+    setLoading(true);
+    const updatedData = {
+      name: {
+        first: data.name.first,
+        middle: data.name.middle,
+        last: data.name.last,
+      },
+      phone: data.phone,
+      email: data.email, // Incluye el email en los datos a enviar
+      image: {
+        url: data.image.url,
+        alt: data.image.alt,
+      },
+      address: {
+        state: data.address.state,
+        country: data.address.country,
+        city: data.address.city,
+        street: data.address.street,
+        houseNumber: data.address.houseNumber,
+        zip: data.address.zip,
+      },
+      isBusiness: data.isBusiness, // Incluye isBusiness si es necesario
+    };
+
+    try {
+      await axios.put(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${userId}`, updatedData, {
+        headers: {
+          'x-auth-token': authToken, // Incluye el token de autenticación aquí
         },
-        email: '',
-        phone: '',
-    });
-    const [loading, setLoading] = useState(true);
-    const user = useSelector((state: TRootState) => state.UserSlice.user); // Asegúrate de obtener el usuario correctamente
-    const nav = useNavigate();
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const res = await axios.get('https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/profile', {
-                    headers: { 'x-auth-token': localStorage.getItem('token') }
-                });
-                setUserData(res.data);
-            } catch (error) {
-                toast.error('Error fetching user data');
-                nav('/profile'); // Redirigir si hay un error
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUserData();
-    }, [nav]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-
-        // Manejar el cambio para el objeto name
-        if (name.includes('name')) {
-            const nameKey = name.split('.')[1]; // 'first', 'middle' o 'last'
-            setUserData(prevState => ({
-                ...prevState,
-                name: { ...prevState.name, [nameKey]: value }
-            }));
-        } else {
-            setUserData({ ...userData, [name]: value });
-        }
-    };
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        // Validar los datos antes de enviar
-        const { error } = EditUserSchema.validate(userData);
-        if (error) {
-            toast.error(error.details[0].message); // Mostrar error de validación
-            return;
-        }
-
-        try {
-            if (!user || !user._id) {
-                toast.error('User not found');
-                return;
-            }
-            const res = await axios.put(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${user._id}`, userData, {
-                headers: { 'x-auth-token': localStorage.getItem('token') }
-            });
-            if (res.status === 200) {
-                toast.success('Profile updated successfully');
-                nav('/profile'); // Redirige al perfil después de actualizar
-            }
-        } catch (error) {
-            toast.error('Error updating profile');
-        }
-    };
-
-    if (loading) {
-        return <div>Loading...</div>;
+      });
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Profile update failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return (
-        <div className="flex flex-col items-center justify-center gap-5">
-            <h1 className="text-3xl font-bold">Edit Profile</h1>
-            <form onSubmit={handleSubmit} className="w-3/5 p-5 bg-white rounded shadow-md">
-                <div className="mb-4">
-                    <label htmlFor="first" className="block text-sm font-medium">First Name</label>
-                    <input
-                        type="text"
-                        name="name.first"
-                        value={userData.name.first}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="middle" className="block text-sm font-medium">Middle Name</label>
-                    <input
-                        type="text"
-                        name="name.middle"
-                        value={userData.name.middle}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="last" className="block text-sm font-medium">Last Name</label>
-                    <input
-                        type="text"
-                        name="name.last"
-                        value={userData.name.last}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="email" className="block text-sm font-medium">Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={userData.email}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="phone" className="block text-sm font-medium">Phone</label>
-                    <input
-                        type="tel"
-                        name="phone"
-                        value={userData.phone}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded"
-                    />
-                </div>
-                <button type="submit" className="w-full p-2 text-white bg-blue-500 rounded">Update Profile</button>
-            </form>
+  if (loading) {
+    return <div>Loading...</div>; // O puedes mostrar un spinner o similar
+  }
+
+  if (!userData) {
+    return <div>No user data available.</div>; // Manejo de caso sin datos de usuario
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+      <form onSubmit={handleSubmit(onSubmit)} className="max-w-md p-6 m-auto">
+        <h1 className="mt-2 mb-5 text-4xl font-bold text-dark">Edit Profile</h1>
+
+        {/* Email */}
+        <TextInput
+          {...register("email")}
+          placeholder="Email"
+          type="email"
+          className="mb-2"
+          color={errors.email ? "failure" : "gray"}
+        />
+        {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+
+        {/* Name fields */}
+        <div className="flex space-x-2">
+          <TextInput
+            {...register("name.first")}
+            placeholder="First Name"
+            className="mb-2"
+            color={errors.name?.first ? "failure" : "gray"}
+          />
+          <TextInput
+            {...register("name.middle")}
+            placeholder="Middle Name"
+            className="mb-2"
+          />
+          <TextInput
+            {...register("name.last")}
+            placeholder="Last Name"
+            className="mb-2"
+            color={errors.name?.last ? "failure" : "gray"}
+          />
         </div>
-    );
+        {errors.name?.first && <p className="text-red-600">{errors.name.first.message}</p>}
+        {errors.name?.last && <p className="text-red-600">{errors.name.last.message}</p>}
+
+        {/* Phone */}
+        <TextInput
+          {...register("phone")}
+          placeholder="Phone"
+          type="tel"
+          className="mb-2"
+          color={errors.phone ? "failure" : "gray"}
+        />
+        {errors.phone && <p className="text-red-600">{errors.phone.message}</p>}
+
+        {/* Image URL */}
+        <TextInput
+          {...register("image.url")}
+          placeholder="Image URL"
+          className="mb-2"
+          color={errors.image?.url ? "failure" : "gray"}
+        />
+        {errors.image?.url && <p className="text-red-600">{errors.image.url.message}</p>}
+
+        {/* Image Alt Text */}
+        <TextInput
+          {...register("image.alt")}
+          placeholder="Image Alt Text"
+          className="mb-2"
+        />
+
+        {/* Address fields */}
+        <TextInput
+          {...register("address.country")}
+          placeholder="Country"
+          className="mb-2"
+          color={errors.address?.country ? "failure" : "gray"}
+        />
+        {errors.address?.country && <p className="text-red-600">{errors.address.country.message}</p>}
+
+        <TextInput
+          {...register("address.state")}
+          placeholder="State"
+          className="mb-2"
+        />
+
+        <TextInput
+          {...register("address.city")}
+          placeholder="City"
+          className="mb-2"
+          color={errors.address?.city ? "failure" : "gray"}
+        />
+        {errors.address?.city && <p className="text-red-600">{errors.address.city.message}</p>}
+
+        <TextInput
+          {...register("address.street")}
+          placeholder="Street"
+          className="mb-2"
+          color={errors.address?.street ? "failure" : "gray"}
+        />
+        {errors.address?.street && <p className="text-red-600">{errors.address.street.message}</p>}
+
+        <TextInput
+          {...register("address.houseNumber")}
+          placeholder="House Number"
+          type="number"
+          className="mb-2"
+          color={errors.address?.houseNumber ? "failure" : "gray"}
+        />
+        {errors.address?.houseNumber && <p className="text-red-600">{errors.address.houseNumber.message}</p>}
+
+        <TextInput
+          {...register("address.zip")}
+          placeholder="ZIP Code"
+          type="number"
+          className="mb-2"
+          color={errors.address?.zip ? "failure" : "gray"}
+        />
+        {errors.address?.zip && <p className="text-red-600">{errors.address.zip.message}</p>}
+
+        {/* Submit Button */}
+        <Button type="submit" className="mt-4" disabled={loading}>
+          {loading ? "Updating..." : "Update Profile"}
+        </Button>
+      </form>
+    </div>
+  );
 };
 
 export default EditProfile;

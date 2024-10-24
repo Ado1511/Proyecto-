@@ -1,4 +1,5 @@
 export type TUser = {
+  userName: string | undefined;
   isRegular: string;
   imageUrl: string;
   about: string;
