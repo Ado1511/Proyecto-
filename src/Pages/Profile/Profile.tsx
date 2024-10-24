@@ -1,84 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { TRootState } from "../../Store/BigPie";
+import { Card } from "flowbite-react";
+import { useNavigate } from "react-router-dom";
 
-const Profile: React.FC = () => {
-  const [userData, setUserData] = useState<any>(null);
-  const navigate = useNavigate();
-  const userId = '6559f2dbdedf2db2b52bde42'; // Cambia esto según tu lógica
+const Profile = () => {
+    const user = useSelector((state: TRootState) => state.UserSlice.user);
+    const [profileData, setProfileData] = useState({
+        name: "",
+        email: "",
+        userType: "",
+        aboutMe: "",
+        city: "",
+        phone: "",
+    });
+    const [error] = useState("");
+    const nav = useNavigate();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        const response = await axios.get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${userId}`, {
-          headers: {
-            'x-auth-token': token,
-          },
-        });
-        setUserData(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
+    useEffect(() => {
+        if (!user) {
+            nav("/SignIn", { replace: true });
+        } else {
+            setProfileData({
+                name: `${user.name.first} ${user.name.middle || ""} ${user.name.last}`.trim(),
+                email: user.email,
+                userType: user.isBusiness ? "Business" : user.isAdmin ? "Admin" : user.isRegular ? "Regular" : "",
+                aboutMe: user.about || "",
+                city: user.city || "",
+                phone: user.phone || "",
+            });
+        }
+    }, [user, nav]);
+
+    const handleEditProfile = () => {
+        console.log("Navigating to Edit Profile"); // Para verificar que la función se llama
+        nav('/EditProfile');
     };
 
-    fetchUserData();
-  }, [userId]);
-
-  const handleUpdateProfile = async () => {
-    const token = localStorage.getItem('authToken');
-    const updatedUserData = {
-      name: {
-        first: 'business',
-        middle: 'man',
-        last: 'user',
-      },
-      phone: '0512345567',
-      image: {
-        url: 'https://cdn.pixabay.com/photo/2016/04/01/10/11/avatar-1299805_960_720.png',
-        alt: 'business card image',
-      },
-      address: {
-        state: 'IL',
-        country: 'Israel',
-        city: 'Arad',
-        street: 'Shoham',
-        houseNumber: 5,
-        zip: 8920435,
-      },
-    };
-
-    try {
-      const response = await axios.put(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${userId}`, updatedUserData, {
-        headers: {
-          'x-auth-token': token,
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log("Usuario actualizado:", response.data);
-      navigate('/edit-profile'); // Redirige a la página de edición de perfil
-    } catch (error) {
-      console.error("Error updating user:", error);
-    }
-  };
-
-  return (
-    <div>
-      <h1>Perfil de Usuario</h1>
-      {userData ? (
-        <div>
-          <p>Nombre: {userData.name.first} {userData.name.middle} {userData.name.last}</p>
-          <p>Teléfono: {userData.phone}</p>
-          <p>Correo Electrónico: {userData.email}</p>
-          <img src={userData.image.url} alt={userData.image.alt} />
-          <p>Dirección: {userData.address.street}, {userData.address.city}, {userData.address.state}, {userData.address.country}</p>
-          <button onClick={handleUpdateProfile}>Actualizar Perfil</button>
+    return (
+        <div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+            <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Profile Page</h1>
+            <div className="flex justify-center mt-10 mb-5">
+                <Card className="p-6 bg-white border border-gray-300 rounded-lg shadow-lg w-96">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">User Profile</h2>
+                    {error && <p className="text-red-500">{error}</p>}
+                    <div>
+                        <p className="mb-4"><strong>Full Name:</strong> {profileData.name}</p>
+                        <p className="mb-4"><strong>Email:</strong> {profileData.email}</p>
+                        <p className="mb-4"><strong>Phone:</strong> {profileData.phone}</p>
+                        <p className="mb-4"><strong>City:</strong> {profileData.city}</p>
+                        <p className="mb-4"><strong>About Me:</strong> {profileData.aboutMe}</p>
+                        <p className="mb-4"><strong>User Type:</strong> {profileData.userType}</p>
+                    </div>
+                    <button 
+                        onClick={handleEditProfile}
+                        className="w-full p-2 mt-4 text-white transition duration-300 bg-blue-500 rounded hover:bg-blue-600"
+                    >
+                        Update Profile
+                    </button>
+                </Card>
+            </div>
         </div>
-      ) : (
-        <p>Cargando datos del usuario...</p>
-      )}
-    </div>
-  );
+    );
 };
 
 export default Profile;
