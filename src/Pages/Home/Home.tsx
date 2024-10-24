@@ -12,105 +12,93 @@ import { MdOutlinePhone } from "react-icons/md";
 const Home = () => {
   const [cards, setCards] = useState<TCard[]>([]);
   const nav = useNavigate();
-  const searchWord = useSelector(
-    (state: TRootState) => state.SearchSlice.search,
-  );
+  const searchWord = useSelector((state: TRootState) => state.SearchSlice.search);
+  const user = useSelector((state: TRootState) => state.UserSlice);
 
   const searchCards = () => {
-    return cards.filter((item: TCard) => item.title.includes(searchWord));
+    return cards.filter((item: TCard) => item.title.toLowerCase().includes(searchWord.toLowerCase()));
   };
 
   const isLikedCard = (card: TCard) => {
     if (user && user.user) {
       return card.likes?.includes(user.user._id) ?? false;
-    } else return false;
-  }
+    }
+    return false;
+  };
 
   const navToCard = (id: string) => {
     nav("/card/" + id);
   };
 
   const getData = async () => {
-    const res = await axios.get(
-      "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards",
-    );
-    setCards(res.data);
+    try {
+      const res = await axios.get("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards");
+      setCards(res.data);
+    } catch (error) {
+      toast.error("Error fetching cards");
+    }
   };
 
   const likeUnlikeCard = async (card: TCard) => {
-    const res = await axios.patch("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/" + card._id);
-    if (res.status === 200) {
-
-      const index = cards.indexOf(card);
-      const ifLiked = cards[index].likes?.includes(user.user!._id) ?? false;
-      const newCards = [...cards];
-      if (ifLiked) {
-        if (newCards[index].likes) {
-          newCards[index].likes.splice(index);
+    try {
+      const res = await axios.patch("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/" + card._id);
+      if (res.status === 200) {
+        const index = cards.indexOf(card);
+        const ifLiked = cards[index].likes?.includes(user.user!._id) ?? false;
+        const newCards = [...cards];
+        if (ifLiked) {
+          newCards[index].likes?.splice(newCards[index].likes.indexOf(user.user!._id), 1);
+          toast.success("Card unliked");
+        } else {
+          newCards[index].likes?.push(user.user!._id);
+          toast.success("Card liked");
         }
-        toast.success("card unliked");
-      } else {
-        newCards[index].likes?.push(user.user!._id);
-        toast.success("card liked");
+        setCards(newCards);
       }
-      setCards(newCards);
-    };
+    } catch (error) {
+      toast.error("Error liking/unliking card");
+    }
   };
 
   useEffect(() => {
     getData();
   }, []);
 
-  const user = useSelector((state: TRootState) => state.UserSlice);
-
   return (
-    <div className="flex flex-col items-center justify-start gap-10 " style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+    <div className="flex flex-col items-center justify-start gap-10 p-4" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
       <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Home Page</h1>
       <p className="mb-6 text-lg text-dark">Welcome Home!</p>
-      {user.isLoggedIn && <p className="text-lg"></p>}
+      {user.isLoggedIn && <p className="text-lg">Welcome back, {user.user?.name.first}!</p>}
 
-      <div className="grid w-4/5 grid-cols-3 gap-2 m-auto ">
-
-        {searchCards()!.map((item: TCard) => { 
-          return (
-            <Card 
-              key={item._id}
-              className="w-5/6 m-auto max-h-250 h-[500px] shadow-xl ">
-              <img
-                onClick={() => navToCard(item._id)}
-                src={item.image.url}
-                alt={item.image.alt}
-                className="h-[200px] object-fill rounded-xl  max-h-200 max-w-200"
-              />
-              <h1>{item.title}</h1>
-              <hr />
-              <hr />
-              <h3>{item.subtitle}</h3>
-              <p>{item.description}</p>
-              <hr />
-
+      <div className="grid w-full max-w-screen-xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {searchCards().map((item: TCard) => (
+          <Card key={item._id} className="flex flex-col w-full shadow-xl">
+            <img
+              onClick={() => navToCard(item._id)}
+              src={item.image.url}
+              alt={item.image.alt}
+              className="object-cover h-48 rounded-t-lg cursor-pointer" // Asegúrate de que la altura se mantenga
+            />
+            <div className="flex flex-col flex-grow p-4">
+              <h1 className="text-lg font-semibold">{item.title}</h1>
+              <h3 className="text-sm text-gray-600">{item.subtitle}</h3>
+              <p className="flex-grow text-sm">{item.description}</p>
               {user && user.user && (
-  <div className="flex items-center justify-center space-x-4">
-    <a href={`https://web.whatsapp.com/` } target="_blank">
-        <MdOutlinePhone
-      size={20}
-      className="cursor-pointer"
-      color="black"
-    />
-    </a>
-    <TiHeartOutline
-      size={20}
-      className="cursor-pointer"
-      color={isLikedCard(item) ? "red" : "black"}
-      onClick={() => likeUnlikeCard(item)}
-    />
-  </div>
-)}
-
-
-            </Card>
-          );
-        })}
+                <div className="flex items-center justify-between mt-4">
+                  <a href={`https://web.whatsapp.com/`} target="_blank" rel="noopener noreferrer">
+                    <MdOutlinePhone size={20} className="cursor-pointer" color="black" />
+                  </a>
+                  <TiHeartOutline
+                    size={20}
+                    className="cursor-pointer"
+                    color={isLikedCard(item) ? "red" : "black"}
+                    onClick={() => likeUnlikeCard(item)}
+                  />
+                </div>
+              )}
+            </div>
+          </Card>
+        ))}
       </div>
     </div>
   );

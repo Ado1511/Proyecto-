@@ -3,11 +3,16 @@ $breakpoint-mobile: 480px;
 $breakpoint-tablet: 768px;
 $breakpoint-desktop: 1024px;
 
-// Clases de utilidad general
+
 .responsive-container {
     display: flex;
     justify-content: space-between;
     padding: 20px;
+
+    @media (max-width: $breakpoint-desktop) {
+        
+        padding: 15px;
+    }
 
     @media (max-width: $breakpoint-tablet) {
         flex-direction: column;
@@ -16,5 +21,18 @@ $breakpoint-desktop: 1024px;
 
     @media (max-width: $breakpoint-mobile) {
         padding: 5px;
+        
+        align-items: center; 
     }
 }
+
+
+.responsive-item {
+    flex: 1; 
+
+    @media (max-width: $breakpoint-tablet) {
+        width: 100%; 
+        margin-bottom: 10px; 
+    }
+}
+

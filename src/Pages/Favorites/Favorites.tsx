@@ -12,51 +12,44 @@ import { MdOutlinePhone } from "react-icons/md";
 const Favorites = () => {
     const [cards, setCards] = useState<TCard[]>([]);
     const nav = useNavigate();
-    const searchWord = useSelector(
-        (state: TRootState) => state.SearchSlice.search,
-    );
-
+    const searchWord = useSelector((state: TRootState) => state.SearchSlice.search);
     const user = useSelector((state: TRootState) => state.UserSlice);
 
     const searchCards = () => {
-        return cards
-            .filter((item) => item.likes && item.likes.includes(user.user!._id))
-            .filter((item: TCard) => item.title.includes(searchWord));
+        return cards.filter((item: TCard) => item.likes?.includes(user.user!._id) && item.title.toLowerCase().includes(searchWord.toLowerCase()));
     };
 
     const isLikedCard = (card: TCard) => {
-        if (user && user.user) {
-            return card.likes && card.likes.includes(user.user._id);
-        } else return false;
-    }
+        return user.user ? card.likes?.includes(user.user._id) : false;
+    };
 
     const navToCard = (id: string) => {
         nav("/card/" + id);
     };
 
     const getData = async () => {
-        const res = await axios.get(
-            "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards",
-        );
-        setCards(res.data);
+        try {
+            const res = await axios.get("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards");
+            setCards(res.data);
+        } catch (error) {
+            toast.error("Error fetching cards");
+        }
     };
 
     const likeUnlikeCard = async (card: TCard) => {
         try {
-            const res = await axios.patch("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/6601941691640a0b5122cdd5" + card._id);
+            const res = await axios.patch(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${card._id}`);
             if (res.status === 200) {
-                toast.success("Card liked/unliked");
-
                 const index = cards.indexOf(card);
                 const newCards = [...cards];
                 const userId = user.user!._id;
 
                 if (newCards[index].likes && newCards[index].likes.includes(userId)) {
                     newCards[index].likes = newCards[index].likes.filter(id => id !== userId);
+                    toast.success("Card unliked");
                 } else {
-                    if (newCards[index].likes) {
-                        newCards[index].likes.push(userId);
-                    }
+                    newCards[index].likes = newCards[index].likes ? [...newCards[index].likes, userId] : [userId];
+                    toast.success("Card liked");
                 }
 
                 setCards(newCards);
@@ -71,43 +64,41 @@ const Favorites = () => {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-start gap-10" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+        <div className="flex flex-col items-center justify-start gap-10 p-4" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Favorites</h1>
             <p className="mb-6 text-lg text-dark">Welcome to your Favorites</p>
-            {user.isLoggedIn && <p className="text-lg"></p>}
 
-            <div className="grid w-4/5 grid-cols-3 gap-3 m-auto">
-                {searchCards()!.map((item: TCard) => {
-                    return (
-                        <Card key={item._id} className="w-4/6 m-auto">
-                            <img
-                                onClick={() => navToCard(item._id)}
-                                src={item.image.url}
-                                alt={item.image.alt}
-                                className="h-[200px] object-fill"
-                            />
-                            <h1>{item.title}</h1>
-                            <h3>{item.subtitle}</h3>
-                            <p>{item.description}</p>
-                            <hr />
-                            {user && user.user && (
-                                <div className="flex items-center justify-center space-x-4">
-                                    <MdOutlinePhone
-                                        size={20}
-                                        className="cursor-pointer"
-                                        color="black"
-                                    />
-                                    <TiHeartOutline
-                                        size={20}
-                                        className="cursor-pointer"
-                                        color={isLikedCard(item) ? "red" : "black"}
-                                        onClick={() => likeUnlikeCard(item)}
-                                    />
-                                </div>
-                            )}
-                        </Card>
-                    );
-                })}
+            {/* Ajustes para la cuadrícula responsiva */}
+            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {searchCards().map((item: TCard) => (
+                    <Card key={item._id} className="w-full h-auto max-w-sm m-auto shadow-xl">
+                        <img
+                            onClick={() => navToCard(item._id)}
+                            src={item.image.url}
+                            alt={item.image.alt}
+                            className="h-[200px] object-cover rounded-full"
+                        />
+                        <h1 className="text-lg font-semibold">{item.title}</h1>
+                        <hr />
+                        <h3 className="text-md">{item.subtitle}</h3>
+                        <p className="text-sm">{item.description}</p>
+                        <hr />
+
+                        {user && user.user && (
+                            <div className="flex items-center justify-center space-x-4">
+                                <a href={`https://web.whatsapp.com/`} target="_blank" rel="noopener noreferrer">
+                                    <MdOutlinePhone size={20} className="cursor-pointer" color="black" />
+                                </a>
+                                <TiHeartOutline
+                                    size={20}
+                                    className="cursor-pointer"
+                                    color={isLikedCard(item) ? "red" : "black"}
+                                    onClick={() => likeUnlikeCard(item)}
+                                />
+                            </div>
+                        )}
+                    </Card>
+                ))}
             </div>
         </div>
     );

@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/classnames-order */
 import { joiResolver } from "@hookform/resolvers/joi";
 import { Button } from "flowbite-react";
 import { useForm } from "react-hook-form";
@@ -57,11 +56,11 @@ function SignIn() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start gap-2 mb-20" style={{background: `linear-gradient(#ff9846, #ffffff)`}}>
+    <div className="flex flex-col items-center justify-start gap-2 mb-20 bg-gradient-to-b from-[#ff9846] to-white">
       <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Sign In</h1>
       <p className="mb-6 text-lg text-dark">Sign In to the amazing world of BizSnap</p>
       <form
-        className="flex flex-col w-2/5 gap-4 p-4 m-auto mt-20 bg-white rounded-lg shadow-lg"
+        className="flex flex-col w-full max-w-sm gap-4 p-4 m-auto mt-20 bg-white rounded-lg shadow-lg"
         onSubmit={handleSubmit(submit)}
       >
         <h1 className="text-2xl font-bold text-gray-800">Sign In</h1>

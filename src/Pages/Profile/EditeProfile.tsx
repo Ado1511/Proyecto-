@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { TextInput, Button, Spinner } from "flowbite-react"; // Spinner añadido
+import { TextInput, Button, Spinner } from "flowbite-react";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { TRootState } from "../../Store/BigPie";
@@ -33,11 +33,11 @@ type FormData = {
 
 const EditProfile = () => {
     const user = useSelector((state: TRootState) => state.UserSlice.user);
-    const [loading, setLoading] = useState(false); // Simplificado con un solo uso de loading
+    const [loading, setLoading] = useState(false);
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: { errors },
         setValue,
     } = useForm<FormData>({
         resolver: joiResolver(EditUserSchema),
@@ -46,6 +46,7 @@ const EditProfile = () => {
 
     useEffect(() => {
         if (user) {
+            
             setValue("name.first", user.name.first);
             setValue("name.middle", user.name.middle || "");
             setValue("name.last", user.name.last);
@@ -65,10 +66,16 @@ const EditProfile = () => {
 
     const onSubmit = async (data: FormData) => {
         setLoading(true);
+        if (!user) {
+            toast.error("User data is not available.");
+            setLoading(false);
+            return;
+        }
+
+        const token = localStorage.getItem("token");
         try {
-            const token = localStorage.getItem("token");
-            const response = await axios.put(
-                `https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/6559f2dbdedf2db2b52bde42`,
+            await axios.put(
+                `https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users/${user._id}`,
                 data,
                 {
                     headers: {
@@ -80,38 +87,40 @@ const EditProfile = () => {
         } catch (error) {
             const err = error as any;
             console.error("Error updating profile:", err.response?.data || err.message);
-            toast.error("Failed to update profile. Please try again.");
+            toast.error(err.response?.data.message || "Failed to update profile. Please try again.");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
-            <form onSubmit={handleSubmit(onSubmit)} className="max-w-md p-6 m-auto">
+        <div className="flex flex-col items-center justify-start gap-10 px-4 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md p-6 md:max-w-2xl">
                 <h1 className="mt-2 mb-5 text-4xl font-bold text-dark">Edit Profile</h1>
 
-                <div className="flex space-x-2">
+                <div className="flex flex-col md:flex-row md:space-x-2">
                     <TextInput
                         {...register("name.first")}
                         placeholder="First Name"
                         className="mb-2"
                         color={errors.name?.first ? "failure" : "gray"}
                     />
+                    {errors.name?.first && <p className="text-red-600">{errors.name.first.message}</p>}
+
                     <TextInput
                         {...register("name.middle")}
                         placeholder="Middle Name"
                         className="mb-2"
                     />
+
                     <TextInput
                         {...register("name.last")}
                         placeholder="Last Name"
                         className="mb-2"
                         color={errors.name?.last ? "failure" : "gray"}
                     />
+                    {errors.name?.last && <p className="text-red-600">{errors.name.last.message}</p>}
                 </div>
-                {errors.name?.first && <p className="text-red-600">{errors.name.first.message}</p>}
-                {errors.name?.last && <p className="text-red-600">{errors.name.last.message}</p>}
 
                 <TextInput
                     {...register("email")}
@@ -136,6 +145,7 @@ const EditProfile = () => {
                     placeholder="About Me"
                     className="mb-2"
                 />
+                {errors.aboutMe && <p className="text-red-600">{errors.aboutMe.message}</p>}
 
                 <TextInput
                     {...register("image.url")}
@@ -187,10 +197,12 @@ const EditProfile = () => {
                 />
                 {errors.address?.zip && <p className="text-red-600">{errors.address.zip.message}</p>}
 
-                {/* Submit Button with Loading Spinner */}
-                <Button type="submit" className="m-auto w-full md:w-[20%]" disabled={!isValid || loading}>
+                <Button type="submit" className="m-auto w-full md:w-[20%]" disabled={loading}>
                     {loading ? <Spinner /> : "Update Profile"}
                 </Button>
+
+                {/* Solo para depuración; puedes eliminar esto en producción */}
+                <pre>{JSON.stringify(errors, null, 2)}</pre> 
             </form>
         </div>
     );

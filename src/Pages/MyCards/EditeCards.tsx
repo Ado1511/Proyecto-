@@ -66,7 +66,32 @@ const EditCard = () => {
         fetchCardData();
     }, [id, setValue]);
 
-    const onSubmit = async (form: any) => {
+    interface Image {
+        url: string;
+        alt: string;
+    }
+
+    interface Address {
+        state: string;
+        country: string;
+        city: string;
+        street: string;
+        houseNumber: number;
+        zip: number;
+    }
+
+    interface CardData {
+        title: string;
+        subtitle: string;
+        description: string;
+        phone: string;
+        email: string;
+        web: string;
+        image: Image;
+        address: Address;
+    }
+
+    const onSubmit = async (form: CardData) => {
         try {
             await axios.put(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`, form);
             toast.success("Business card has been updated successfully");
@@ -81,10 +106,9 @@ const EditCard = () => {
         <>
             <form 
                 onSubmit={handleSubmit(onSubmit)} 
-                className="flex flex-col gap-4 p-4 m-auto text-center rounded-lg shadow-lg" 
-                style={{ background: `linear-gradient(#ff9846, #ffffff)` }}
+                className="flex flex-col max-w-md gap-4 p-4 m-auto text-center rounded-lg shadow-lg bg-gradient-to-r from-orange-400 to-white"
             >
-                <h1 className="text-4xl font-bold text-center text-gray-800">Edit Card</h1>
+                <h1 className="text-2xl font-bold text-center text-gray-800 md:text-4xl">Edit Card</h1>
 
                 <div className="flex flex-col gap-3 m-auto md:flex-row">
                     <div className="flex flex-col w-full md:w-1/2">
@@ -109,16 +133,15 @@ const EditCard = () => {
                 </div>
 
                 <div className="flex flex-col m-auto">
-                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-center text-gray-900 dark:text-green-500">
+                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-center text-gray-900">
                         Description
                     </label>
                     <textarea 
                         id="description" 
                         {...register("description")} 
-                        className="block p-2.5 w-full md:w-[500px] h-[200px] m-auto text-sm text-gray-900 bg-orange-200
+                        className="block p-2.5 w-full h-[150px] text-sm text-gray-900 bg-orange-200
                         rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500
-                        dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                        dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none"
+                        resize-none"
                     />
                     {errors.description && <span className="text-red-500">{errors.description.message}</span>}
                 </div>
@@ -231,17 +254,15 @@ const EditCard = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-3 m-auto md:flex-row">
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Zip Code"
-                            type="number"
-                            {...register("address.zip")}
-                        />
-                    </div>
+                <div className="flex flex-col gap-3 m-auto">
+                    <FloatingLabel
+                        variant={"standard"} label="Zip Code"
+                        type="number"
+                        {...register("address.zip")}
+                    />
                 </div>
 
-                <Button type="submit" className="m-auto w-full md:w-[20%]" disabled={!isValid}>
+                <Button type="submit" disabled={!isValid} className="mt-4">
                     Update Card
                 </Button>
 

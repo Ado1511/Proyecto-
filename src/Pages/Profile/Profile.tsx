@@ -38,13 +38,13 @@ const Profile = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
-            <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Profile Page</h1>
-            <div className="flex justify-center mt-10 mb-5">
-                <Card className="p-6 bg-white border border-gray-300 rounded-lg shadow-lg w-96">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">User Profile</h2>
-                    {error && <p className="text-red-500">{error}</p>}
-                    <div>
+        <div className="flex flex-col items-center justify-start gap-10 p-4 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+            <h1 className="mt-5 mb-4 text-4xl font-bold text-center text-dark">Profile Page</h1>
+            <div className="flex justify-center w-full mt-10 mb-5">
+                <Card className="w-full max-w-md p-6 bg-white border border-gray-300 rounded-lg shadow-lg md:max-w-lg lg:max-w-xl">
+                    <h2 className="mb-4 text-xl font-bold text-center text-gray-900">User Profile</h2>
+                    {error && <p className="text-center text-red-500">{error}</p>}
+                    <div className="flex flex-col">
                         <p className="mb-4"><strong>Full Name:</strong> {profileData.name}</p>
                         <p className="mb-4"><strong>Email:</strong> {profileData.email}</p>
                         <p className="mb-4"><strong>Phone:</strong> {profileData.phone}</p>

@@ -33,7 +33,32 @@ const CreateCard = () => {
         resolver: joiResolver(CreateCardSchema),
     });
 
-    const onSubmit = async (form: any) => {
+    interface Image {
+        url: string;
+        alt: string;
+    }
+
+    interface Address {
+        state: string;
+        country: string;
+        city: string;
+        street: string;
+        houseNumber: number;
+        zip: number;
+    }
+
+    interface CardData {
+        title: string;
+        subtitle: string;
+        description: string;
+        phone: string;
+        email: string;
+        web: string;
+        image: Image;
+        address: Address;
+    }
+
+    const onSubmit = async (form: CardData) => {
         try {
             const res = await axios.post("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards", form);
             localStorage.setItem("res", res.data);
@@ -48,8 +73,12 @@ const CreateCard = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 m-auto text-center rounded-lg shadow-lg" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
-                <h1 className="text-4xl font-bold text-center text-gray-800">Card Creation</h1>
+            <form 
+                onSubmit={handleSubmit(onSubmit)} 
+                className="flex flex-col gap-4 p-4 m-auto overflow-hidden text-center rounded-lg shadow-lg"
+                style={{ background: `linear-gradient(#ff9846, #ffffff)` }}
+            >
+                <h1 className="text-2xl font-bold text-gray-800 md:text-4xl">Card Creation</h1>
 
                 <div className="flex flex-col gap-3 m-auto md:flex-row">
                     <div className="flex flex-col w-full md:w-1/2">
@@ -76,28 +105,23 @@ const CreateCard = () => {
                 </div>
 
                 <div className="flex flex-col m-auto">
-                    <div className="flex flex-col">
-                        <label htmlFor="message" className="block mb-2 text-sm font-medium text-center text-gray-900 dark:text-green-500">
-                            Description
-                        </label>
-                        <textarea
-                            id="message"
-                            {...register("description")}
-                            className="block p-2.5 w-full md:w-[500px] h-[200px] m-auto text-sm text-gray-900 bg-orange-200
-                        rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500
-                        dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                        dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none"
-                            placeholder="Write your card description here..."
-                        ></textarea>
-                        <span className="mt-2 text-sm text-center text-red-800">{errors.description?.message}</span>
-                    </div>
+                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900">
+                        Description
+                    </label>
+                    <textarea
+                        id="description"
+                        {...register("description")}
+                        className="block p-2.5 w-full md:w-[500px] h-[200px] m-auto text-sm text-gray-900 bg-orange-200 rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500 resize-none"
+                        placeholder="Write your card description here..."
+                    ></textarea>
+                    <span className="mt-2 text-sm text-center text-red-800">{errors.description?.message}</span>
                 </div>
 
                 <div className="flex flex-col gap-3 m-auto md:flex-row">
                     <div className="flex flex-col w-full md:w-1/2">
                         <FloatingLabel
                             label="Phone"
-                            type="number"
+                            type="text"
                             variant="standard"
                             {...register("phone")}
                             color={errors.phone ? "error" : "success"}
@@ -226,7 +250,11 @@ const CreateCard = () => {
                     </div>
                 </div>
 
-                <Button type="submit" disabled={!isValid} className="m-auto w-full md:w-[20%]">Create Card</Button>
+               
+                <Button type="submit" disabled={!isValid} className="m-auto w-full md:w-[20%] text-white bg-blue-500 hover:bg-blue-600">
+                    Create Card
+                </Button>
+
                 <ToastContainer />
             </form>
         </>

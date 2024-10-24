@@ -25,12 +25,12 @@ const CardComponent = ({
     onDelete: () => void;
     isLiked: boolean;
 }) => (
-    <Card key={item._id} className="w-2/6 m-auto">
+    <Card key={item._id} className="w-full m-auto sm:w-2/6"> {/* Cambiado para ser responsivo */}
         <img
             onClick={onEdit}
             src={item.image.url}
             alt={item.image.alt}
-            className="h-[200px] object-fill cursor-pointer"
+            className="h-[200px] object-cover cursor-pointer"
         />
         <h1 className="text-lg font-semibold">{item.title}</h1>
         <hr />
@@ -107,7 +107,7 @@ const MyCards = () => {
 
     const deleteCard = async (card: TCard) => {
         try {
-            const res = await axios.delete(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards${card._id}`);
+            const res = await axios.delete(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards/${card._id}`);
             if (res) {
                 setCards(cards.filter(c => c._id !== card._id));
                 toast.success("Card deleted");
@@ -133,9 +133,8 @@ const MyCards = () => {
         <div className="flex flex-col items-center justify-start gap-10" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">My Cards</h1>
             <p className="mb-6 text-lg text-dark">These cards were made by you</p>
-            {user.isLoggedIn && <p className="text-lg"></p>}
 
-            <div className="flex flex-wrap w-3/5 gap-1 m-auto">
+            <div className="w-full h-auto max-w-sm m-auto shadow-xl"> {/* Cambiado para ser responsivo */}
                 {searchCards().map((item: TCard) => (
                     <CardComponent
                         key={item._id}

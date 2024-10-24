@@ -55,128 +55,129 @@ const Signup = () => {
   };
 
   return (
-    <><div className="flex flex-col items-center justify-start gap-10 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
-      
+    <div className="flex flex-col items-center justify-start gap-10 m-auto bg-gradient-to-b from-[#ff9846] to-white">
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-md p-6 m-auto">
-      <h1 className="mt-2 mb-5 text-4xl font-bold text-dark">Sign Up</h1>
+        <h1 className="mt-2 mb-5 text-4xl font-bold text-dark">Sign Up</h1>
 
-      {/* Email */}
-      <TextInput
-        {...register("email")}
-        placeholder="Email"
-        type="email"
-        className="mb-2"
-        color={errors.email ? "failure" : "gray"} />
-      {errors.email && <p className="text-red-600">{errors.email.message}</p>}
-
-      {/* Password */}
-      <TextInput
-        {...register("password")}
-        placeholder="Password"
-        type="password"
-        className="mb-2"
-        color={errors.password ? "failure" : "gray"} />
-      {errors.password && <p className="text-red-600">{errors.password.message}</p>}
-
-      {/* Name fields */}
-      <div className="flex space-x-2">
+        {/* Email */}
         <TextInput
-          {...register("name.first")}
-          placeholder="First Name"
+          {...register("email")}
+          placeholder="Email"
+          type="email"
           className="mb-2"
-          color={errors.name?.first ? "failure" : "gray"} />
+          color={errors.email ? "failure" : "gray"} />
+        {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+
+        {/* Password */}
         <TextInput
-          {...register("name.middle")}
-          placeholder="Middle Name"
+          {...register("password")}
+          placeholder="Password"
+          type="password"
+          className="mb-2"
+          color={errors.password ? "failure" : "gray"} />
+        {errors.password && <p className="text-red-600">{errors.password.message}</p>}
+
+        {/* Name fields */}
+        <div className="flex flex-col space-y-2">
+          <TextInput
+            {...register("name.first")}
+            placeholder="First Name"
+            className="mb-2"
+            color={errors.name?.first ? "failure" : "gray"} />
+          {errors.name?.first && <p className="text-red-600">{errors.name.first.message}</p>}
+          
+          <TextInput
+            {...register("name.middle")}
+            placeholder="Middle Name"
+            className="mb-2" />
+          
+          <TextInput
+            {...register("name.last")}
+            placeholder="Last Name"
+            className="mb-2"
+            color={errors.name?.last ? "failure" : "gray"} />
+          {errors.name?.last && <p className="text-red-600">{errors.name.last.message}</p>}
+        </div>
+
+        {/* Phone */}
+        <TextInput
+          {...register("phone")}
+          placeholder="Phone"
+          type="tel"
+          className="mb-2"
+          color={errors.phone ? "failure" : "gray"} />
+        {errors.phone && <p className="text-red-600">{errors.phone.message}</p>}
+
+        {/* Image URL */}
+        <TextInput
+          {...register("image.url")}
+          placeholder="Image URL"
+          className="mb-2"
+          color={errors.image?.url ? "failure" : "gray"} />
+        {errors.image?.url && <p className="text-red-600">{errors.image.url.message}</p>}
+
+        {/* Image Alt Text */}
+        <TextInput
+          {...register("image.alt")}
+          placeholder="Image Alt Text"
           className="mb-2" />
+
+        {/* Address fields */}
         <TextInput
-          {...register("name.last")}
-          placeholder="Last Name"
+          {...register("address.country")}
+          placeholder="Country"
           className="mb-2"
-          color={errors.name?.last ? "failure" : "gray"} />
-      </div>
-      {errors.name?.first && <p className="text-red-600">{errors.name.first.message}</p>}
-      {errors.name?.last && <p className="text-red-600">{errors.name.last.message}</p>}
+          color={errors.address?.country ? "failure" : "gray"} />
+        {errors.address?.country && <p className="text-red-600">{errors.address.country.message}</p>}
 
-      {/* Phone */}
-      <TextInput
-        {...register("phone")}
-        placeholder="Phone"
-        type="tel"
-        className="mb-2"
-        color={errors.phone ? "failure" : "gray"} />
-      {errors.phone && <p className="text-red-600">{errors.phone.message}</p>}
+        <TextInput
+          {...register("address.state")}
+          placeholder="State"
+          className="mb-2" />
 
-      {/* Image URL */}
-      <TextInput
-        {...register("image.url")}
-        placeholder="Image URL"
-        className="mb-2"
-        color={errors.image?.url ? "failure" : "gray"} />
-      {errors.image?.url && <p className="text-red-600">{errors.image.url.message}</p>}
+        <TextInput
+          {...register("address.city")}
+          placeholder="City"
+          className="mb-2"
+          color={errors.address?.city ? "failure" : "gray"} />
+        {errors.address?.city && <p className="text-red-600">{errors.address.city.message}</p>}
 
-      {/* Image Alt Text */}
-      <TextInput
-        {...register("image.alt")}
-        placeholder="Image Alt Text"
-        className="mb-2" />
+        <TextInput
+          {...register("address.street")}
+          placeholder="Street"
+          className="mb-2"
+          color={errors.address?.street ? "failure" : "gray"} />
+        {errors.address?.street && <p className="text-red-600">{errors.address.street.message}</p>}
 
-      {/* Address fields */}
-      <TextInput
-        {...register("address.country")}
-        placeholder="Country"
-        className="mb-2"
-        color={errors.address?.country ? "failure" : "gray"} />
-      {errors.address?.country && <p className="text-red-600">{errors.address.country.message}</p>}
+        <div className="flex justify-between">
+          <TextInput
+            {...register("address.houseNumber")}
+            placeholder="House Number"
+            type="number"
+            className="w-1/2 mb-2"
+            color={errors.address?.houseNumber ? "failure" : "gray"} />
+          {errors.address?.houseNumber && <p className="text-red-600">{errors.address.houseNumber.message}</p>}
 
-      <TextInput
-        {...register("address.state")}
-        placeholder="State"
-        className="mb-2" />
+          <TextInput
+            {...register("address.zip")}
+            placeholder="ZIP Code"
+            type="number"
+            className="w-1/2 mb-2"
+            color={errors.address?.zip ? "failure" : "gray"} />
+          {errors.address?.zip && <p className="text-red-600">{errors.address.zip.message}</p>}
+        </div>
 
-      <TextInput
-        {...register("address.city")}
-        placeholder="City"
-        className="mb-2"
-        color={errors.address?.city ? "failure" : "gray"} />
-      {errors.address?.city && <p className="text-red-600">{errors.address.city.message}</p>}
+        {/* Is Business Checkbox */}
+        <div className="flex items-center mb-4">
+          <Checkbox {...register("isBusiness")} />
+          <label className="ml-2 text-gray-700">Is this a business account?</label>
+        </div>
 
-      <TextInput
-        {...register("address.street")}
-        placeholder="Street"
-        className="mb-2"
-        color={errors.address?.street ? "failure" : "gray"} />
-      {errors.address?.street && <p className="text-red-600">{errors.address.street.message}</p>}
-
-      <TextInput
-        {...register("address.houseNumber")}
-        placeholder="House Number"
-        type="number"
-        className="mb-2"
-        color={errors.address?.houseNumber ? "failure" : "gray"} />
-      {errors.address?.houseNumber && <p className="text-red-600">{errors.address.houseNumber.message}</p>}
-
-      <TextInput
-        {...register("address.zip")}
-        placeholder="ZIP Code"
-        type="number"
-        className="mb-2"
-        color={errors.address?.zip ? "failure" : "gray"} />
-      {errors.address?.zip && <p className="text-red-600">{errors.address.zip.message}</p>}
-
-      {/* Business Checkbox */}
-      <div className="flex items-center mb-2">
-        <Checkbox {...register("isBusiness")} id="isBusiness" />
-        <label htmlFor="isBusiness" className="ml-2 text-gray-900">
-          Are you registering as a business?
-        </label>
-      </div>
-
-      {/* Submit Button */}
-      <Button type="submit" className="mt-4" disabled={loading}>
-        {loading ? "Signing Up..." : "Sign Up"}
-      </Button>
-    </form></div></>
+        <Button type="submit" disabled={loading} className="w-full">
+          {loading ? "Signing Up..." : "Sign Up"}
+        </Button>
+      </form>
+    </div>
   );
 };
 
