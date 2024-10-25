@@ -1,275 +1,102 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom"; 
-import { ToastContainer, toast } from "react-toastify";
-import { CreateCardSchema } from "../../validations/CreateCardSchema"; 
-import { FloatingLabel, Button } from "flowbite-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { FaTrash } from "react-icons/fa"; // Importar el ícono de papelera
 
-const EditCard = () => {
-    const { id } = useParams();
-    const navigate = useNavigate(); 
-    const initialCardData = {
-        title: "",
-        subtitle: "",
-        description: "",
-        phone: "",
-        email: "",
-        web: "",
-        image: {
-            url: "",
-            alt: "",
-        },
-        address: {
-            state: "",
-            country: "",
-            city: "",
-            street: "",
-            houseNumber: 0,
-            zip: 0,
-        },
-    };
-
-    const { register, handleSubmit, setValue, formState: { errors, isValid } } = useForm({
-        defaultValues: initialCardData,
-        mode: "onChange",
-        resolver: joiResolver(CreateCardSchema),
-    });
-
-    useEffect(() => {
-        const fetchCardData = async () => {
-            try {
-                const response = await axios.get(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`);
-                const cardData = response.data;
-
-                setValue("title", cardData.title);
-                setValue("subtitle", cardData.subtitle);
-                setValue("description", cardData.description);
-                setValue("phone", cardData.phone);
-                setValue("email", cardData.email);
-                setValue("web", cardData.web);
-                setValue("image.url", cardData.image.url);
-                setValue("image.alt", cardData.image.alt);
-                setValue("address.state", cardData.address.state);
-                setValue("address.country", cardData.address.country);
-                setValue("address.city", cardData.address.city);
-                setValue("address.street", cardData.address.street);
-                setValue("address.houseNumber", cardData.address.houseNumber);
-                setValue("address.zip", cardData.address.zip);
-            } catch (error) {
-                toast.error("Error fetching card data");
-                console.error(error);
-            }
-        };
-
-        fetchCardData();
-    }, [id, setValue]);
-
-    interface Image {
+interface Card {
+    _id: string;
+    title: string;
+    subtitle: string;
+    description: string;
+    phone: string;
+    email: string;
+    web: string;
+    image: {
         url: string;
         alt: string;
-    }
-
-    interface Address {
+    };
+    address: {
         state: string;
         country: string;
         city: string;
         street: string;
         houseNumber: number;
         zip: number;
-    }
+    };
+    bizNumber: number;
+}
 
-    interface CardData {
-        title: string;
-        subtitle: string;
-        description: string;
-        phone: string;
-        email: string;
-        web: string;
-        image: Image;
-        address: Address;
-    }
+const MyCards: React.FC = () => {
+    const [cards, setCards] = useState<Card[]>([]);
+    const { getValues } = useForm();
+    const navigate = useNavigate();
 
-    const onSubmit = async (form: CardData) => {
+    // Fetch cards on mount
+    useEffect(() => {
+        const fetchCards = async () => {
+            const token = localStorage.getItem("token");
+            const response = await axios.get("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards", {
+                headers: {
+                    'x-auth-token': token,
+                },
+            });
+            setCards(response.data);
+        };
+        fetchCards();
+    }, []);
+
+    // Function to delete a card
+    const deleteCard = async (cardId: string) => {
+        const bizNumber = getValues("bizNumber"); // Obtener el bizNumber del formulario
+        const token = localStorage.getItem("token"); // Obtener el token del local storage
+
         try {
-            await axios.put(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${id}`, form);
-            toast.success("Business card has been updated successfully");
-            navigate(-1); 
+            await axios.delete(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`, {
+                headers: {
+                    'x-auth-token': token, // Añadir el token a los headers
+                },
+                data: {
+                    bizNumber: bizNumber, // Incluir el bizNumber en el cuerpo de la solicitud
+                },
+            });
+
+            toast.success("Business card has been deleted successfully");
+            // Refetch cards after deletion
+            setCards(prevCards => prevCards.filter(card => card._id !== cardId));
         } catch (error) {
-            toast.error("Business card update failed");
-            console.error(error);
+            toast.error("Business card deletion failed");
+            console.error((error as any).response?.data || error);
         }
     };
 
     return (
-        <>
-            <form 
-                onSubmit={handleSubmit(onSubmit)} 
-                className="flex flex-col max-w-md gap-4 p-4 m-auto text-center rounded-lg shadow-lg bg-gradient-to-r from-orange-400 to-white"
-            >
-                <h1 className="text-2xl font-bold text-center text-gray-800 md:text-4xl">Edit Card</h1>
-
-                <div className="flex flex-col gap-3 m-auto md:flex-row">
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Title"
-                            type="text"
-                            {...register("title")}
-                            color={errors.title ? "error" : "success"}                        
-                        />
-                        {errors.title && <span className="text-sm text-red-800">{errors.title.message}</span>}
+        <div>
+            <h1>My Business Cards</h1>
+            <div className="cards-list">
+                {cards.map(card => (
+                    <div key={card._id} className="card">
+                        <h2>{card.title}</h2>
+                        <p>{card.subtitle}</p>
+                        <p>{card.description}</p>
+                        <p>{card.phone}</p>
+                        <p>{card.email}</p>
+                        <p>{card.web}</p>
+                        <img src={card.image.url} alt={card.image.alt} />
+                        <div className="card-actions">
+                            <button onClick={() => deleteCard(card._id)}>
+                                <FaTrash /> {/* Icono de papelera */}
+                            </button>
+                        </div>
                     </div>
-
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Subtitle"
-                            type="text"
-                            {...register("subtitle")}
-                            color={errors.subtitle ? "error" : "success"}                        
-                        />
-                        {errors.subtitle && <span className="text-sm text-red-800">{errors.subtitle.message}</span>}
-                    </div>
-                </div>
-
-                <div className="flex flex-col m-auto">
-                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-center text-gray-900">
-                        Description
-                    </label>
-                    <textarea 
-                        id="description" 
-                        {...register("description")} 
-                        className="block p-2.5 w-full h-[150px] text-sm text-gray-900 bg-orange-200
-                        rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500
-                        resize-none"
-                    />
-                    {errors.description && <span className="text-red-500">{errors.description.message}</span>}
-                </div>
-
-                <div className="flex flex-col gap-3 m-auto md:flex-row">
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Phone"
-                            type="text"
-                            {...register("phone")}
-                            color={errors.phone ? "error" : "success"}                        
-                        />
-                        {errors.phone && <span className="text-sm text-red-800">{errors.phone.message}</span>}
-                    </div>
-
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Email"
-                            type="email"
-                            {...register("email")}
-                            color={errors.email ? "error" : "success"}                        
-                        />
-                        {errors.email && <span className="text-sm text-red-800">{errors.email.message}</span>}
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-3 m-auto md:flex-row">
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Website"
-                            type="text"
-                            {...register("web")}
-                            color={errors.web ? "error" : "success"}                        
-                        />
-                        {errors.web && <span className="text-sm text-red-800">{errors.web.message}</span>}
-                    </div>
-
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Image URL"
-                            type="text"
-                            {...register("image.url")}
-                            color={errors.image?.url ? "error" : "success"}                        
-                        />
-                        {errors.image?.url && <span className="text-sm text-red-800">{errors.image.url.message}</span>}
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-3 m-auto md:flex-row">
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Image Alt Text"
-                            type="text"
-                            {...register("image.alt")}
-                            color={errors.image?.alt ? "error" : "success"}                        
-                        />
-                        {errors.image?.alt && <span className="text-sm text-red-800">{errors.image.alt.message}</span>}
-                    </div>
-
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="State"
-                            type="text"
-                            {...register("address.state")}                        
-                        />
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-3 m-auto md:flex-row">
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Country"
-                            type="text"
-                            {...register("address.country")}
-                            color={errors.address?.country ? "error" : "success"}                        
-                        />
-                        {errors.address?.country && <span className="text-sm text-red-800">{errors.address.country.message}</span>}
-                    </div>
-
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="City"
-                            type="text"
-                            {...register("address.city")}
-                            color={errors.address?.city ? "error" : "success"}                        
-                        />
-                        {errors.address?.city && <span className="text-sm text-red-800">{errors.address.city.message}</span>}
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-3 m-auto md:flex-row">
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="Street"
-                            type="text"
-                            {...register("address.street")}
-                            color={errors.address?.street ? "error" : "success"}                        
-                        />
-                        {errors.address?.street && <span className="text-sm text-red-800">{errors.address.street.message}</span>}
-                    </div>
-
-                    <div className="flex flex-col w-full md:w-1/2">
-                        <FloatingLabel
-                            variant={"standard"} label="House Number"
-                            type="number"
-                            {...register("address.houseNumber")}
-                            color={errors.address?.houseNumber ? "error" : "success"}                        
-                        />
-                        {errors.address?.houseNumber && <span className="text-sm text-red-800">{errors.address.houseNumber.message}</span>}
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-3 m-auto">
-                    <FloatingLabel
-                        variant={"standard"} label="Zip Code"
-                        type="number"
-                        {...register("address.zip")}
-                    />
-                </div>
-
-                <Button type="submit" disabled={!isValid} className="mt-4">
-                    Update Card
-                </Button>
-
-                <ToastContainer />
-            </form>
-        </>
+                ))}
+            </div>
+            <div className="fixed-button">
+                <button onClick={() => navigate('/add-card')}>Add Card</button>
+            </div>
+        </div>
     );
 };
 
-export default EditCard;
+export default MyCards;

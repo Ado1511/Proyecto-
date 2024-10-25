@@ -3,14 +3,13 @@ import { TRootState } from "../../Store/BigPie";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { TCard } from "../../Types/TCard";
-import { Card, Pagination } from "flowbite-react";
+import { Card } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BsPencilSquare } from "react-icons/bs";
 import { BsTrash3Fill } from "react-icons/bs";
 import { TiHeartOutline } from "react-icons/ti";
 import { CiCirclePlus } from "react-icons/ci";
-
 
 const CardComponent = ({
     item,
@@ -25,7 +24,7 @@ const CardComponent = ({
     onDelete: () => void;
     isLiked: boolean;
 }) => (
-    <Card key={item._id} className="grid w-full max-w-screen-xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"> {/* Cambiado para ser responsivo */}
+    <Card key={item._id} className="flex flex-col items-center w-full max-w-sm gap-4 p-4 shadow-xl">
         <img
             onClick={onEdit}
             src={item.image.url}
@@ -37,7 +36,9 @@ const CardComponent = ({
         <h3 className="text-md">{item.subtitle}</h3>
         <p className="text-sm">{item.description}</p>
         <hr />
-        <div className="flex items-center justify-between mt-2 space-x-4">
+
+        {/* Contenedor de los iconos con espacio uniforme */}
+        <div className="flex items-center justify-center mt-2 space-x-4">
             <BsPencilSquare size={20} className="cursor-pointer" onClick={onEdit} />
             <TiHeartOutline
                 size={20}
@@ -53,8 +54,6 @@ const CardComponent = ({
 const MyCards = () => {
     const [cards, setCards] = useState<TCard[]>([]);
     const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1); // Página actual
-    const [cardsPerPage] = useState(5); // Número de tarjetas por página
     const nav = useNavigate();
     const user = useSelector((state: TRootState) => state.UserSlice);
     const searchWord = useSelector((state: TRootState) => state.SearchSlice.search);
@@ -96,7 +95,7 @@ const MyCards = () => {
                     if (newCards[index].likes) {
                         newCards[index].likes.push(user.user!._id);
                     } else {
-                        newCards[index].likes = [user.user!._id];
+                        newCards[index].likes = [user.user ? user.user._id : ''];
                     }
                     toast.success("Card liked");
                 }
@@ -119,20 +118,9 @@ const MyCards = () => {
         }
     };
 
-    const navToCreate = () => {
-        nav("/createcard");
-    };
-
     useEffect(() => {
         getData();
     }, []);
-
-    
-    const indexOfLastCard = currentPage * cardsPerPage;
-    const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-    const currentCards = searchCards().slice(indexOfFirstCard, indexOfLastCard); 
-
-    const totalPages = Math.ceil(searchCards().length / cardsPerPage);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -144,7 +132,7 @@ const MyCards = () => {
             <p className="mb-6 text-lg text-dark">These cards were made by you</p>
 
             <div className="w-full h-auto max-w-sm m-auto shadow-xl"> 
-                {currentCards.map((item: TCard) => (
+                {searchCards().map((item: TCard) => (
                     <CardComponent
                         key={item._id}
                         item={item}
@@ -155,20 +143,25 @@ const MyCards = () => {
                     />
                 ))}
             </div>
-
-            {/* Controles de paginación con Flowbite */}
-            <Pagination
-                className="mt-4"
-                currentPage={currentPage}
-                onPageChange={setCurrentPage}
-                totalPages={totalPages}
-            />
-
-            <div className="fixed flex p-3 rounded-full cursor-pointer right-10 top-20">
-                <CiCirclePlus size={50} onClick={navToCreate} />
-            </div>
         </div>
     );
 };
 
-export default MyCards;
+// Contenedor fijo para los iconos, asegurando que esté siempre visible
+const FixedIconContainer = () => {
+    const nav = useNavigate();
+    return (
+        <div className="fixed flex p-3 bg-white rounded-full shadow-lg justify-items-stretch right-10 top-20">
+            <CiCirclePlus size={50} onClick={() => nav("/createcard")} className="cursor-pointer" />
+        </div>
+    );
+};
+
+const MyCardsPage = () => (
+    <>
+        <MyCards />
+        <FixedIconContainer />
+    </>
+);
+
+export default MyCardsPage;

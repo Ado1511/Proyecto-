@@ -22,6 +22,8 @@ const Home = () => {
     return cards.filter((item: TCard) => item.title.toLowerCase().includes(searchWord.toLowerCase()));
   };
 
+
+  
   const isLikedCard = (card: TCard) => {
     if (user && user.user) {
       return card.likes?.includes(user.user._id) ?? false;

@@ -5,6 +5,7 @@ import { Button, TextInput, Checkbox } from "flowbite-react";
 import RegisterSchema from "../../validations/RegisterSchema.joi"; 
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 type FormData = {
   email: string;
@@ -32,6 +33,7 @@ type FormData = {
 
 const Signup = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Inicializa el useNavigate
 
   const {
     register,
@@ -46,6 +48,7 @@ const Signup = () => {
     try {
       await axios.post("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users", data);
       toast.success("Signup successful!");
+      navigate('/SignIn'); // Redirige a SignIn después de un registro exitoso
     } catch (error) {
       console.error(error);
       toast.error("Signup failed. Please try again.");
@@ -55,9 +58,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start gap-10 m-auto bg-gradient-to-b from-[#ff9846] to-white">
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-md p-6 m-auto">
-        <h1 className="mt-2 mb-5 text-4xl font-bold text-dark">Sign Up</h1>
+    <div className="flex flex-col items-center justify-start gap-10 m-auto bg-gradient-to-b from-[#ff9846] to-white dark:from-[#ff6f3c] dark:to-gray-800">
+      <form onSubmit={handleSubmit(onSubmit)} className="max-w-md p-6 m-auto bg-white rounded-lg shadow-lg dark:bg-gray-800">
+        <h1 className="mt-2 mb-5 text-4xl font-bold text-dark dark:text-white">Sign Up</h1>
 
         {/* Email */}
         <TextInput
@@ -170,7 +173,7 @@ const Signup = () => {
         {/* Is Business Checkbox */}
         <div className="flex items-center mb-4">
           <Checkbox {...register("isBusiness")} />
-          <label className="ml-2 text-gray-700">Is this a business account?</label>
+          <label className="ml-2 text-gray-700 dark:text-gray-300">Is this a business account?</label>
         </div>
 
         <Button type="submit" disabled={loading} className="w-full">
