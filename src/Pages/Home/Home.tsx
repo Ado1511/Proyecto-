@@ -66,8 +66,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center justify-start gap-10 p-4" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
-      <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Home Page</h1>
-      <p className="mb-6 text-lg text-dark">Welcome Home!</p>
+      <h1 className="mt-3 mb-2 text-4xl font-bold text-dark">Home Page</h1>
       {user.isLoggedIn && <p className="text-lg">Welcome back, {user.user?.name.first}!</p>}
 
       <div className="grid w-full max-w-screen-xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

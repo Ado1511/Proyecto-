@@ -3,7 +3,7 @@ import { TRootState } from "../../Store/BigPie";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { TCard } from "../../Types/TCard";
-import { Card } from "flowbite-react";
+import { Card, Pagination } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BsPencilSquare } from "react-icons/bs";
@@ -53,6 +53,8 @@ const CardComponent = ({
 const MyCards = () => {
     const [cards, setCards] = useState<TCard[]>([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1); // Página actual
+    const [cardsPerPage] = useState(5); // Número de tarjetas por página
     const nav = useNavigate();
     const user = useSelector((state: TRootState) => state.UserSlice);
     const searchWord = useSelector((state: TRootState) => state.SearchSlice.search);
@@ -125,6 +127,13 @@ const MyCards = () => {
         getData();
     }, []);
 
+    // Calcular el índice de las tarjetas a mostrar
+    const indexOfLastCard = currentPage * cardsPerPage;
+    const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+    const currentCards = searchCards().slice(indexOfFirstCard, indexOfLastCard); // Tarjetas de la página actual
+
+    const totalPages = Math.ceil(searchCards().length / cardsPerPage);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -135,7 +144,7 @@ const MyCards = () => {
             <p className="mb-6 text-lg text-dark">These cards were made by you</p>
 
             <div className="w-full h-auto max-w-sm m-auto shadow-xl"> {/* Cambiado para ser responsivo */}
-                {searchCards().map((item: TCard) => (
+                {currentCards.map((item: TCard) => (
                     <CardComponent
                         key={item._id}
                         item={item}
@@ -146,6 +155,14 @@ const MyCards = () => {
                     />
                 ))}
             </div>
+
+            {/* Controles de paginación con Flowbite */}
+            <Pagination
+                className="mt-4"
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                totalPages={totalPages}
+            />
 
             <div className="fixed flex p-3 rounded-full cursor-pointer right-10 top-20">
                 <CiCirclePlus size={50} onClick={navToCreate} />

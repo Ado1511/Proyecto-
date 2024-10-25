@@ -68,35 +68,33 @@ const Favorites = () => {
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">Favorites</h1>
             <p className="mb-6 text-lg text-dark">Welcome to your Favorites</p>
 
-            {/* Ajustes para la cuadrícula responsiva */}
-            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid w-full max-w-screen-xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {searchCards().map((item: TCard) => (
-                    <Card key={item._id} className="w-full h-auto max-w-sm m-auto shadow-xl">
+                    <Card key={item._id} className="flex flex-col w-full shadow-xl">
                         <img
                             onClick={() => navToCard(item._id)}
                             src={item.image.url}
                             alt={item.image.alt}
-                            className="h-[200px] object-cover rounded-full"
+                            className="object-cover h-48 rounded-t-lg cursor-pointer" // Asegúrate de que la altura se mantenga
                         />
-                        <h1 className="text-lg font-semibold">{item.title}</h1>
-                        <hr />
-                        <h3 className="text-md">{item.subtitle}</h3>
-                        <p className="text-sm">{item.description}</p>
-                        <hr />
-
-                        {user && user.user && (
-                            <div className="flex items-center justify-center space-x-4">
-                                <a href={`https://web.whatsapp.com/`} target="_blank" rel="noopener noreferrer">
-                                    <MdOutlinePhone size={20} className="cursor-pointer" color="black" />
-                                </a>
-                                <TiHeartOutline
-                                    size={20}
-                                    className="cursor-pointer"
-                                    color={isLikedCard(item) ? "red" : "black"}
-                                    onClick={() => likeUnlikeCard(item)}
-                                />
-                            </div>
-                        )}
+                        <div className="flex flex-col flex-grow p-4">
+                            <h1 className="text-lg font-semibold">{item.title}</h1>
+                            <h3 className="text-sm text-gray-600">{item.subtitle}</h3>
+                            <p className="flex-grow text-sm">{item.description}</p>
+                            {user && user.user && (
+                                <div className="flex items-center justify-between mt-4">
+                                    <a href={`https://web.whatsapp.com/`} target="_blank" rel="noopener noreferrer">
+                                        <MdOutlinePhone size={20} className="cursor-pointer" color="black" />
+                                    </a>
+                                    <TiHeartOutline
+                                        size={20}
+                                        className="cursor-pointer"
+                                        color={isLikedCard(item) ? "red" : "black"}
+                                        onClick={() => likeUnlikeCard(item)}
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </Card>
                 ))}
             </div>
