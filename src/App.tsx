@@ -19,7 +19,7 @@ import SignUp from "./Pages/SingUp/Register";
 import About from "./Pages/About/About";
 import EditCard from "./Pages/MyCards/EditeCards";
 import CardList from "./Pages/Paguinacion/CardList";
-import EditProfile from "./Pages/Profile/EditeProfile"; 
+import EditProfile from "./Pages/Profile/EditeProfile";
 
 function App() {
   const user = useSelector((state: TRootState) => state.UserSlice.user);

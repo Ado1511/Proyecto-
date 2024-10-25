@@ -10,6 +10,10 @@ const RouteGuard = (props: TRouteGuardProps) => {
   return props.user ? <>{props.children}</> : <Navigate to={"/"} />;
 };
 
+
+
+
+
 export default RouteGuard;
 
 

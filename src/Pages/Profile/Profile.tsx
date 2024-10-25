@@ -37,6 +37,8 @@ const Profile = () => {
         nav('/EditProfile');
     };
 
+
+
     return (
         <div className="flex flex-col items-center justify-start gap-10 p-4 m-auto" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-center text-dark">Profile Page</h1>
@@ -63,5 +65,6 @@ const Profile = () => {
         </div>
     );
 };
+
 
 export default Profile;
