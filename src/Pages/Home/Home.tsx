@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TiHeartOutline } from "react-icons/ti";
 import { MdOutlinePhone } from "react-icons/md";
- 
+
 
 
 
