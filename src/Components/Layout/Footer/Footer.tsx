@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="flex justify-center w-full">
         <FbFooter.Copyright
           href="#"
-          by="Ado.css"
+          by="Ado.css אתר זה נבנה בדם,יזע ודמעות על ידי"
           year={2024}
           className="text-dark"
         />
