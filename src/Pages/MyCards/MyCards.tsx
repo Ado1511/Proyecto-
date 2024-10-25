@@ -11,7 +11,7 @@ import { BsTrash3Fill } from "react-icons/bs";
 import { TiHeartOutline } from "react-icons/ti";
 import { CiCirclePlus } from "react-icons/ci";
 
-// Componente para cada tarjeta
+
 const CardComponent = ({
     item,
     onEdit,
@@ -25,7 +25,7 @@ const CardComponent = ({
     onDelete: () => void;
     isLiked: boolean;
 }) => (
-    <Card key={item._id} className="w-full m-auto sm:w-2/6"> {/* Cambiado para ser responsivo */}
+    <Card key={item._id} className="grid w-full max-w-screen-xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"> {/* Cambiado para ser responsivo */}
         <img
             onClick={onEdit}
             src={item.image.url}
@@ -127,10 +127,10 @@ const MyCards = () => {
         getData();
     }, []);
 
-    // Calcular el índice de las tarjetas a mostrar
+    
     const indexOfLastCard = currentPage * cardsPerPage;
     const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-    const currentCards = searchCards().slice(indexOfFirstCard, indexOfLastCard); // Tarjetas de la página actual
+    const currentCards = searchCards().slice(indexOfFirstCard, indexOfLastCard); 
 
     const totalPages = Math.ceil(searchCards().length / cardsPerPage);
 
@@ -143,7 +143,7 @@ const MyCards = () => {
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">My Cards</h1>
             <p className="mb-6 text-lg text-dark">These cards were made by you</p>
 
-            <div className="w-full h-auto max-w-sm m-auto shadow-xl"> {/* Cambiado para ser responsivo */}
+            <div className="w-full h-auto max-w-sm m-auto shadow-xl"> 
                 {currentCards.map((item: TCard) => (
                     <CardComponent
                         key={item._id}
