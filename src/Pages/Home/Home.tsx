@@ -9,9 +9,6 @@ import { toast } from "react-toastify";
 import { TiHeartOutline } from "react-icons/ti";
 import { MdOutlinePhone } from "react-icons/md";
 
-
-
-
 const Home = () => {
   const [cards, setCards] = useState<TCard[]>([]);
   const nav = useNavigate();
@@ -22,8 +19,6 @@ const Home = () => {
     return cards.filter((item: TCard) => item.title.toLowerCase().includes(searchWord.toLowerCase()));
   };
 
-
-  
   const isLikedCard = (card: TCard) => {
     if (user && user.user) {
       return card.likes?.includes(user.user._id) ?? false;
@@ -81,7 +76,7 @@ const Home = () => {
               onClick={() => navToCard(item._id)}
               src={item.image.url}
               alt={item.image.alt}
-              className="object-cover h-48 rounded-t-lg cursor-pointer" // Asegúrate de que la altura se mantenga
+              className="object-cover h-48 rounded-t-lg cursor-pointer md:h-64 lg:h-72" // Se ajusta la altura según el tamaño de pantalla
             />
             <div className="flex flex-col flex-grow p-4">
               <h1 className="text-lg font-semibold">{item.title}</h1>

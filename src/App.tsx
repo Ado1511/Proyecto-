@@ -18,7 +18,6 @@ import { userActions } from "./Store/UserSlice";
 import SignUp from "./Pages/SingUp/Register";
 import About from "./Pages/About/About";
 import EditCard from "./Pages/MyCards/EditeCards";
-import CardList from "./Pages/Paguinacion/CardList";
 import EditProfile from "./Pages/Profile/EditeProfile";
 
 function App() {
@@ -58,7 +57,7 @@ function App() {
         <Route path="/card/:id" element={<CardDetails />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/editcard/:id" element={<RouteGuard user={user!}><EditCard /></RouteGuard>} />
-        <Route path="/cards" element={<RouteGuard user={user!}><CardList /></RouteGuard>} />
+        
         
         <Route
           path="/profile"
