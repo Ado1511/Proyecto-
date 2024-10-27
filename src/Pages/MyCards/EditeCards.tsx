@@ -3,9 +3,10 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaTrash } from "react-icons/fa"; // Importar el ícono de papelera
+import { FaTrash, FaEdit } from "react-icons/fa"; // Importar iconos de papelera y edición
+import { Card } from "flowbite-react"; // Importar componente Card de flowbite-react
 
-interface Card {
+interface CardData {
     _id: string;
     title: string;
     subtitle: string;
@@ -29,41 +30,32 @@ interface Card {
 }
 
 const MyCards: React.FC = () => {
-    const [cards, setCards] = useState<Card[]>([]);
+    const [cards, setCards] = useState<CardData[]>([]);
     const { getValues } = useForm();
     const navigate = useNavigate();
 
-    // Fetch cards on mount
     useEffect(() => {
         const fetchCards = async () => {
             const token = localStorage.getItem("token");
             const response = await axios.get("https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/my-cards", {
-                headers: {
-                    'x-auth-token': token,
-                },
+                headers: { 'x-auth-token': token },
             });
             setCards(response.data);
         };
         fetchCards();
     }, []);
 
-    // Function to delete a card
     const deleteCard = async (cardId: string) => {
-        const bizNumber = getValues("bizNumber"); // Obtener el bizNumber del formulario
-        const token = localStorage.getItem("token"); // Obtener el token del local storage
+        const bizNumber = getValues("bizNumber");
+        const token = localStorage.getItem("token");
 
         try {
             await axios.delete(`https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards/${cardId}`, {
-                headers: {
-                    'x-auth-token': token, // Añadir el token a los headers
-                },
-                data: {
-                    bizNumber: bizNumber, // Incluir el bizNumber en el cuerpo de la solicitud
-                },
+                headers: { 'x-auth-token': token },
+                data: { bizNumber: bizNumber },
             });
 
             toast.success("Business card has been deleted successfully");
-            // Refetch cards after deletion
             setCards(prevCards => prevCards.filter(card => card._id !== cardId));
         } catch (error) {
             toast.error("Business card deletion failed");
@@ -71,29 +63,43 @@ const MyCards: React.FC = () => {
         }
     };
 
+    const editCard = (cardId: string) => {
+        navigate(`/edit-card/${cardId}`);
+    };
+
     return (
-        <div>
-            <h1>My Business Cards</h1>
-            <div className="cards-list">
+        <div className="flex flex-col items-center justify-start gap-10 p-4" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+            <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">My Business Cards</h1>
+            <div className="grid w-full max-w-screen-xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {cards.map(card => (
-                    <div key={card._id} className="card">
-                        <h2>{card.title}</h2>
-                        <p>{card.subtitle}</p>
-                        <p>{card.description}</p>
-                        <p>{card.phone}</p>
-                        <p>{card.email}</p>
-                        <p>{card.web}</p>
-                        <img src={card.image.url} alt={card.image.alt} />
-                        <div className="card-actions">
-                            <button onClick={() => deleteCard(card._id)}>
-                                <FaTrash /> {/* Icono de papelera */}
-                            </button>
+                    <Card key={card._id} className="flex flex-col w-full shadow-xl">
+                        <img
+                            src={card.image.url}
+                            alt={card.image.alt}
+                            className="object-cover h-48 rounded-t-lg cursor-pointer"
+                        />
+                        <div className="flex flex-col flex-grow p-4">
+                            <h1 className="text-lg font-semibold">{card.title}</h1>
+                            <h3 className="text-sm text-gray-600">{card.subtitle}</h3>
+                            <p className="flex-grow text-sm">{card.description}</p>
+                            <p className="text-sm">{card.phone}</p>
+                            <p className="text-sm">{card.web}</p>
+                            <div className="flex items-center justify-between mt-4">
+                                <button onClick={() => editCard(card._id)} className="text-blue-500">
+                                    <FaEdit size={20} /> {/* Botón de editar */}
+                                </button>
+                                <button onClick={() => deleteCard(card._id)} className="text-red-500">
+                                    <FaTrash size={20} /> {/* Botón de eliminar */}
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </Card>
                 ))}
             </div>
             <div className="fixed-button">
-                <button onClick={() => navigate('/add-card')}>Add Card</button>
+                <button onClick={() => navigate('/add-card')} className="p-2 text-white bg-blue-500 rounded-full shadow-md">
+                    Add Card
+                </button>
             </div>
         </div>
     );
