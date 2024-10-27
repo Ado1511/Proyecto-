@@ -37,7 +37,7 @@ const CardComponent = ({
         <p className="text-sm">{item.description}</p>
         <hr />
 
-        {/* Contenedor de los iconos con espacio uniforme */}
+        
         <div className="flex items-center justify-center mt-2 space-x-4">
             <BsPencilSquare size={20} className="cursor-pointer" onClick={onEdit} />
             <TiHeartOutline
@@ -127,7 +127,7 @@ const MyCards = () => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-start gap-10" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
+        <div className="flex flex-col items-center justify-start gap-10 p-4" style={{ background: `linear-gradient(#ff9846, #ffffff)` }}>
             <h1 className="mt-5 mb-4 text-4xl font-bold text-dark">My Cards</h1>
             <p className="mb-6 text-lg text-dark">These cards were made by you</p>
 
@@ -147,7 +147,6 @@ const MyCards = () => {
     );
 };
 
-// Contenedor fijo para los iconos, asegurando que esté siempre visible
 const FixedIconContainer = () => {
     const nav = useNavigate();
     return (
